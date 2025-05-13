@@ -30,18 +30,17 @@ def oai():
         elif verb == "ListIdentifiers":
             return handler_list_identifiers(request.args)
         elif verb == "ListRecords":
-            metadataPrefix=request.args.get("metadataPrefix")
-            return handler_list_records(metadataPrefix)
+            metadata_prefix = request.args.get("metadataPrefix")
+            return handler_list_records(metadata_prefix)
         elif verb == "ListMetadataFormats":
             return list_metadata_formats(request.args)
-			            
         elif verb == "GetRecord":
             identifier = request.args.get("identifier")
-            metadataPrefix=request.args.get("metadataPrefix")
+            metadata_prefix = request.args.get("metadataPrefix")
                 
             if not identifier:
                 raise OAI_PMH_Error("badArgument", "Missing identifier parameter for GetRecord")
-            return handler_get_record(identifier,metadataPrefix)
+            return handler_get_record(identifier, metadata_prefix)
         raise OAI_PMH_Error("badVerb", f"Unsupported verb: {verb}")
     except OAI_PMH_Error as e:
         return handle_oai_error(e)

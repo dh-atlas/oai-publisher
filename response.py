@@ -7,6 +7,7 @@ OAI_NS = "http://www.openarchives.org/OAI/2.0/"
 XSI_NS = "http://www.w3.org/2001/XMLSchema-instance"
 BASE_URL = "http://localhost:5000/oai"
 
+
 class OAI_PMH_Error(Exception):
     def __init__(self, code, message):
         self.code = code
@@ -42,4 +43,3 @@ def handle_oai_error(error):
     e.set("code", error.code)
     e.text = error.message
     return to_pretty_xml(root)
-

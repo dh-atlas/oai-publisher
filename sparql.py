@@ -15,7 +15,7 @@ WHERE {
 }
 """
 
-LIST_IDENTIFIERS_QUERY= """SELECT DISTINCT ?dataset
+LIST_IDENTIFIERS_QUERY = """SELECT DISTINCT ?dataset
 WHERE {
   
   ?dataset <http://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
@@ -58,7 +58,6 @@ WHERE {
 GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset
 """
 
-
 GET_RECORD_QUERY = """
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT ?dataset
@@ -93,4 +92,3 @@ WHERE {{
 }}
 GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset
 """
-

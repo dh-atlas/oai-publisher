@@ -1,22 +1,22 @@
-#key=element name value=the sparql variable. Ex name to names
-SPARQL_STD_DICT={
-"dataset":"dataset",
-"name":"names",
-"description":"descriptions",
-"creator":"creators",
-"contributor":"contributors",
-"publisher":"publishers",
-"language":"languages",
-"educationalUse":"educationalUses",
-"distribution":"distributions",
-"url":"urls",
-"producer":"producers",
-"additionalType":"additionalType",
-"datePublished":"datePublished",
-"conditionsOfAccess":"conditionsOfAccess"
+# key=element name value=the sparql variable. Ex name to names
+SPARQL_STD_DICT = {
+    'dataset': 'dataset',
+    'name': 'names',
+    'description': 'descriptions',
+    'creator': 'creators',
+    'contributor': 'contributors',
+    'publisher': 'publishers',
+    'language': 'languages',
+    'educationalUse': 'educationalUses',
+    'distribution': 'distributions',
+    'url': 'urls',
+    'producer': 'producers',
+    'additionalType': 'additionalType',
+    'datePublished': 'datePublished',
+    'conditionsOfAccess': 'conditionsOfAccess'
 }
 
-#key = oai_datacite element name value=std dict element name. Ex title=name
+# key = oai_datacite element name value=std dict element name. Ex title=name
 DATACITE_TO_STD_DICT = {
     'oai_datacite:title': ['name'],
     'oai_dc:description': ['description'],
