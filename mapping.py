@@ -1,14 +1,12 @@
-import json
 import xml.etree.ElementTree as ET
-
 import mapping_config
-from mapping_config import mapping_config_openaire
 
-def json_to_datacite(json_response, mapping_config):
+
+def json_to_datacite(sparql_son_response, mapping):
     root = ET.Element("resource", xmlns="http://datacite.org/schema/kernel-4")
 
-    for binding in json_response["results"]["bindings"]:
-        for key, config in mapping_config.items():
+    for binding in sparql_son_response["results"]["bindings"]:
+        for key, config in mapping.items():
             json_field = config["json_field"]
             xml_tag = config["xml_tag"]
             attributes = config.get("attributes", {})
@@ -31,10 +29,11 @@ def json_to_datacite(json_response, mapping_config):
 
     return ET.tostring(root, encoding="unicode")
 
+
 # Sample JSON response
 json_response = {
-    "head" : {
-        "vars" : [
+    "head": {
+        "vars": [
             "dataset",
             "type",
             "names",
@@ -52,69 +51,78 @@ json_response = {
             "conditionsOfAccess"
         ]
     },
-    "results" : {
-        "bindings" : [
+    "results": {
+        "bindings": [
             {
-                "dataset" : {
-                    "type" : "uri",
-                    "value" : "https://w3id.org/dh-atlas/1728943937-3007112"
+                "dataset": {
+                    "type": "uri",
+                    "value": "https://w3id.org/dh-atlas/1728943937-3007112"
                 },
-                "type" : {
-                    "type" : "uri",
-                    "value" : "https://schema.org/Dataset"
+                "type": {
+                    "type": "uri",
+                    "value": "https://schema.org/Dataset"
                 },
-                "names" : {
-                    "type" : "literal",
-                    "value" : "Zeri Photo Archive RDF Dataset"
+                "names": {
+                    "type": "literal",
+                    "value": "Zeri Photo Archive RDF Dataset"
                 },
-                "descriptions" : {
-                    "type" : "literal",
-                    "value" : "The Zeri Photo Archive RDF dataset represents a considerable subset of data already available at Zeri Catalog web site and discoverable through the Europeana Portal, mostly regarding works of Modern Art (15th-16th centuries): about 19.000 works of art and more than 30.000 photographs depicting such works are accurately described by means of like 10 million of RDF triples."
+                "descriptions": {
+                    "type": "literal",
+                    "value": "The Zeri Photo Archive RDF dataset represents a considerable subset of data already "
+                             "available at Zeri Catalog web site and discoverable through the Europeana Portal, "
+                             "mostly regarding works of Modern Art (15th-16th centuries): about 19.000 works of art "
+                             "and more than 30.000 photographs depicting such works are accurately described by means "
+                             "of like 10 million of RDF triples."
                 },
-                "creators" : {
-                    "type" : "literal",
-                    "value" : "https://w3id.org/dh-atlas/1728943969-854 || https://w3id.org/dh-atlas/1728943988-693 || https://w3id.org/dh-atlas/1728944010-053 || https://w3id.org/dh-atlas/1728944026-501 || https://w3id.org/dh-atlas/1728944045-966"
+                "creators": {
+                    "type": "literal",
+                    "value": "https://w3id.org/dh-atlas/1728943969-854 || https://w3id.org/dh-atlas/1728943988-693 || "
+                             "https://w3id.org/dh-atlas/1728944010-053 || https://w3id.org/dh-atlas/1728944026-501 || "
+                             "https://w3id.org/dh-atlas/1728944045-966"
                 },
-                "contributors" : {
-                    "type" : "literal",
-                    "value" : ""
+                "contributors": {
+                    "type": "literal",
+                    "value": ""
                 },
-                "publishers" : {
-                    "type" : "literal",
-                    "value" : "https://w3id.org/dh-atlas/1728944565-1916842"
+                "publishers": {
+                    "type": "literal",
+                    "value": "https://w3id.org/dh-atlas/1728944565-1916842"
                 },
-                "languages" : {
-                    "type" : "literal",
-                    "value" : "http://publications.europa.eu/resource/authority/language/ENG || http://publications.europa.eu/resource/authority/language/ITA"
+                "languages": {
+                    "type": "literal",
+                    "value": "http://publications.europa.eu/resource/authority/language/ENG || "
+                             "http://publications.europa.eu/resource/authority/language/ITA"
                 },
-                "educationalUses" : {
-                    "type" : "literal",
-                    "value" : "https://vocabs.dariah.eu/tadirah/cataloging || https://vocabs.dariah.eu/tadirah/knowledgeDiscovery || https://vocabs.dariah.eu/tadirah/knowledgeExtraction"
+                "educationalUses": {
+                    "type": "literal",
+                    "value": "https://vocabs.dariah.eu/tadirah/cataloging || "
+                             "https://vocabs.dariah.eu/tadirah/knowledgeDiscovery || "
+                             "https://vocabs.dariah.eu/tadirah/knowledgeExtraction"
                 },
-                "distributions" : {
-                    "type" : "literal",
-                    "value" : "https://amsacta.unibo.it/id/eprint/5497/2/dump-complete-13-1-2017.zip"
+                "distributions": {
+                    "type": "literal",
+                    "value": "https://amsacta.unibo.it/id/eprint/5497/2/dump-complete-13-1-2017.zip"
                 },
-                "urls" : {
-                    "type" : "literal",
-                    "value" : "https://w3id.org/zericatalog"
+                "urls": {
+                    "type": "literal",
+                    "value": "https://w3id.org/zericatalog"
                 },
-                "producers" : {
-                    "type" : "literal",
-                    "value" : "https://w3id.org/dh-atlas/1728984604-1499374"
+                "producers": {
+                    "type": "literal",
+                    "value": "https://w3id.org/dh-atlas/1728984604-1499374"
                 },
-                "additionalType" : {
-                    "type" : "uri",
-                    "value" : "https://w3id.org/dh-atlas/LinkedOpenData"
+                "additionalType": {
+                    "type": "uri",
+                    "value": "https://w3id.org/dh-atlas/LinkedOpenData"
                 },
-                "datePublished" : {
-                    "datatype" : "http://www.w3.org/2001/XMLSchema#date",
-                    "type" : "literal",
-                    "value" : "2016-05-20"
+                "datePublished": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#date",
+                    "type": "literal",
+                    "value": "2016-05-20"
                 },
-                "conditionsOfAccess" : {
-                    "type" : "uri",
-                    "value" : "http://purl.org/coar/access_right/c_abf2"
+                "conditionsOfAccess": {
+                    "type": "uri",
+                    "value": "http://purl.org/coar/access_right/c_abf2"
                 }
             }
         ]
@@ -129,4 +137,3 @@ with open("datacite_record.xml", "w") as xml_file:
     xml_file.write(xml_output)
 
 print("DataCite XML record has been saved to datacite_record.xml")
-
