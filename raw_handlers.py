@@ -1,5 +1,5 @@
 from sparql import LIST_IDENTIFIERS_QUERY, LIST_RECORDS_QUERY, GET_RECORD_QUERY
-from response import create_base_response, to_json_response, handle_oai_error, OAI_PMH_Error
+from response import create_base_response, to_json_response, handle_oai_error, OAI_PMH_Error, to_pretty_xml
 from SPARQLWrapper import SPARQLWrapper, JSON
 from datetime import datetime
 import xml.etree.ElementTree as ET
