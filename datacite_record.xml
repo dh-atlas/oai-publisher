@@ -1,23 +1,34 @@
 <resource xmlns="http://datacite.org/schema/kernel-4">
     <identifier identifierType="URL">https://w3id.org/dh-atlas/1728943937-3007112</identifier>
-    <creators>https://w3id.org/dh-atlas/1728943969-854</creators>
-    <creators>https://w3id.org/dh-atlas/1728943988-693</creators>
-    <creators>https://w3id.org/dh-atlas/1728944010-053</creators>
-    <creators>https://w3id.org/dh-atlas/1728944026-501</creators>
-    <creators>https://w3id.org/dh-atlas/1728944045-966</creators>
-    <titles>Zeri Photo Archive RDF Dataset</titles>
-    <publisher>https://w3id.org/dh-atlas/1728944565-1916842</publisher>
+    <creators>
+        <creator>https://w3id.org/dh-atlas/1728943969-854</creator>
+        <creator>https://w3id.org/dh-atlas/1728943988-693</creator>
+        <creator>https://w3id.org/dh-atlas/1728944010-053</creator>
+        <creator>https://w3id.org/dh-atlas/1728944026-501</creator>
+        <creator>https://w3id.org/dh-atlas/1728944045-966</creator>
+    </creators>
+    <titles>
+        <title>Zeri Photo Archive RDF Dataset</title>
+    </titles>
+    <publishers>
+        <publisher>https://w3id.org/dh-atlas/1728944565-1916842</publisher>
+    </publishers>
     <publicationYear>2016</publicationYear>
-    <descriptions descriptionType="Abstract">The Zeri Photo Archive RDF dataset represents a considerable subset of data
-        already available at Zeri Catalog web site and discoverable through the Europeana Portal, mostly regarding works
-        of Modern Art (15th-16th centuries): about 19.000 works of art and more than 30.000 photographs depicting such
-        works are accurately described by means of like 10 million of RDF triples.
+    <descriptions>
+        <description>The Zeri Photo Archive RDF dataset represents a considerable subset of data already available at
+            Zeri Catalog web site and discoverable through the Europeana Portal, mostly regarding works of Modern Art
+            (15th-16th centuries): about 19.000 works of art and more than 30.000 photographs depicting such works are
+            accurately described by means of like 10 million of RDF triples.
+        </description>
     </descriptions>
-    <subjects>https://vocabs.dariah.eu/tadirah/cataloging</subjects>
-    <subjects>https://vocabs.dariah.eu/tadirah/knowledgeDiscovery</subjects>
-    <subjects>https://vocabs.dariah.eu/tadirah/knowledgeExtraction</subjects>
-    <language>http://publications.europa.eu/resource/authority/language/ENG ||
-        http://publications.europa.eu/resource/authority/language/ITA
-    </language>
+    <subjects>
+        <subject>https://vocabs.dariah.eu/tadirah/cataloging</subject>
+        <subject>https://vocabs.dariah.eu/tadirah/knowledgeDiscovery</subject>
+        <subject>https://vocabs.dariah.eu/tadirah/knowledgeExtraction</subject>
+    </subjects>
+    <languages>
+        <language>http://publications.europa.eu/resource/authority/language/ENG</language>
+        <language>http://publications.europa.eu/resource/authority/language/ITA</language>
+    </languages>
     <resourceType resourceTypeGeneral="Dataset">https://schema.org/Dataset</resourceType>
 </resource>
