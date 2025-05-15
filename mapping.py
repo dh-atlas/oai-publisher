@@ -29,7 +29,8 @@ def json_to_datacite(json_sparql_response, mapping):
                     else:
                         element.text = value
 
-    return ET.tostring(root, encoding="unicode")
+    # return ET.tostring(root, encoding="unicode")
+    return root
 
 # Sample JSON response
 json_sample = {
@@ -122,11 +123,11 @@ json_sample = {
 }
 
 # Convert JSON to DataCite XML
-xml_output = json_to_datacite(json_sample, mapping_config_openaire)
+#xml_output = json_to_datacite(json_sample, mapping_config_openaire)
 
 # Save XML to file
-with open("datacite_record.xml", "w") as f:
-    f.write(xml_output)
-
-print("DataCite XML record has been saved to datacite_record.xml")
+# with open("datacite_record.xml", "w") as f:
+#     f.write(xml_output)
+#
+# print("DataCite XML record has been saved to datacite_record.xml")
 

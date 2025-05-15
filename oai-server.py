@@ -27,6 +27,8 @@ def oai():
 
         if verb == "Identify":
             return handler_identify()
+       # if verb == "ListSets":
+       #     return handler_sets()
         elif verb == "ListIdentifiers":
             return handler_list_identifiers(request.args)
         elif verb == "ListRecords":

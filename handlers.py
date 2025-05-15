@@ -1,3 +1,5 @@
+import mapping
+import mapping_config
 from sparql import LIST_IDENTIFIERS_QUERY, LIST_RECORDS_QUERY, GET_RECORD_QUERY
 from response import create_base_response, to_pretty_xml, to_json_response, handle_oai_error, OAI_PMH_Error
 from SPARQLWrapper import SPARQLWrapper, JSON
@@ -344,30 +346,31 @@ def get_record_oai_datacite(identifier):
     datestamp.text = row.get("dateModified", {}).get("value", datetime.utcnow().strftime("%Y-%m-%d"))
 
     # Attach metadata element to record
-    record.append(metadata)
+    #record.append(metadata)
+    record.append(mapping.json_to_datacite(results, mapping_config.mapping_config_openaire))
 
     # Process all fields according to mapping dictionaries
-    for source_field, target_fields in DATACITE_TO_STD_DICT.items():
-        for target_field in target_fields:
-            # Get the corresponding SPARQL field name
-            print(source_field, target_fields)
-            sparql_field = SPARQL_STD_DICT.get(target_field)
-            if sparql_field and sparql_field in row:
-                # Create element with appropriate namespace
-                if source_field.startswith(OAI_DATACITE_PF):
-                    field_name = source_field.split(':')[1]
-                    element = ET.SubElement(datacite, DATACITE_ET + field_name)
-                elif source_field.startswith(OAI_DC_PF):
-                    field_name = source_field.split(':')[1]
-                    element = ET.SubElement(datacite, DC_ET + field_name)
-                elif source_field.startswith(OAI_OAIRE_PF):
-                    field_name = source_field.split(':')[1]
-                    element = ET.SubElement(datacite, OAIRE_ET + field_name)
-                else:
-                    element = ET.SubElement(datacite, source_field)
-
-                # Set the value from SPARQL results
-                element.text = row[sparql_field]["value"]
+    # for source_field, target_fields in DATACITE_TO_STD_DICT.items():
+    #     for target_field in target_fields:
+    #         # Get the corresponding SPARQL field name
+    #         print(source_field, target_fields)
+    #         sparql_field = SPARQL_STD_DICT.get(target_field)
+    #         if sparql_field and sparql_field in row:
+    #             # Create element with appropriate namespace
+    #             if source_field.startswith(OAI_DATACITE_PF):
+    #                 field_name = source_field.split(':')[1]
+    #                 element = ET.SubElement(datacite, DATACITE_ET + field_name)
+    #             elif source_field.startswith(OAI_DC_PF):
+    #                 field_name = source_field.split(':')[1]
+    #                 element = ET.SubElement(datacite, DC_ET + field_name)
+    #             elif source_field.startswith(OAI_OAIRE_PF):
+    #                 field_name = source_field.split(':')[1]
+    #                 element = ET.SubElement(datacite, OAIRE_ET + field_name)
+    #             else:
+    #                 element = ET.SubElement(datacite, source_field)
+    #
+    #             # Set the value from SPARQL results
+    #             element.text = row[sparql_field]["value"]
 
     return to_pretty_xml(root)
 

@@ -92,3 +92,28 @@ WHERE {{
 }}
 GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset
 """
+
+
+GET_AGENT_QUERY = """
+PREFIX schema: <http://schema.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+SELECT *
+WHERE {
+   BIND(<{identifier}> AS ?agent)
+         ?agent schema:name ?name .
+        OPTIONAL {
+         ?agent schema:affiliation ?aff .
+        ?aff schema:name ?affName .
+        }
+        OPTIONAL {
+           ?agent schema:identifier ?orcid .
+            FILTER (strstarts(str(?orcid), 'https://orcid.org'))
+        }
+        OPTIONAL {
+             ?agent schema:sameAs ?wiki .
+            FILTER (strstarts(str(?wiki), 'http://www.wikidata.org'))
+        }            
+   }
+}
+"""
