@@ -58,7 +58,7 @@ WHERE {
   OPTIONAL {{ ?dataset <http://schema.org/producer> ?producer . }}
   OPTIONAL {{ ?dataset <http://schema.org/license> ?license . }}
   }
-GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset
+GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset ?license
 """
 
 GET_RECORD_QUERY = """
@@ -95,7 +95,7 @@ WHERE {
   OPTIONAL {{ ?dataset <http://schema.org/producer> ?producer . }}
   OPTIONAL {{ ?dataset <http://schema.org/license> ?license . }}
 }
-GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset
+GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset ?license
 """
 
 
