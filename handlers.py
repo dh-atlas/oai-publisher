@@ -231,7 +231,10 @@ def list_records_oai_datacite():
                 sparql_field = SPARQL_STD_DICT.get(target_field)
                 if sparql_field and sparql_field in row:
                     # Create element with appropriate namespace
-                    if source_field.startswith(OAI_DATACITE_PF):
+                    if source_field == 'creators':
+                        element = ET.SubElement(datacite, DATACITE_ET + 'creators')
+                        set_agent(row[sparql_field]["value"], element, 'creator')
+                    elif source_field.startswith(OAI_DATACITE_PF):
                         field_name = source_field.split(':')[1]
                         element = ET.SubElement(datacite, DATACITE_ET + field_name)
                     elif source_field.startswith(OAI_DC_PF):
@@ -250,6 +253,20 @@ def list_records_oai_datacite():
 
 
 ####
+
+def set_agent(agents: str, parent_node: SubElement, element_name: str):
+    agent_list = agents.split('||')
+    for agent in agent_list:
+        # Query data from SPARQL
+        query = LIST_RECORDS_QUERY.replace('{identifier}', agent)
+        sparql.setQuery(query)
+        results = sparql.query().convert()
+        for row in results["results"]["bindings"]:
+            element = ET.SubElement(parent_node, DATACITE_ET + element_name)
+            name = ET.SubElement(element, DATACITE_ET + element_name+'_name')
+            name.text= row['name']["value"]
+
+
 
 
 """ GET RECORD """
