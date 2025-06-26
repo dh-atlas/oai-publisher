@@ -31,7 +31,7 @@ SELECT ?dataset
   (GROUP_CONCAT(DISTINCT ?description; separator=" || ") AS ?descriptions)
   (GROUP_CONCAT(DISTINCT ?creator; separator=" || ") AS ?creators)
   (GROUP_CONCAT(DISTINCT ?contributor; separator=" || ") AS ?contributors)
-  (GROUP_CONCAT(DISTINCT ?publisher; separator=" || ") AS ?publishers)
+  (GROUP_CONCAT(DISTINCT ?publisherName; separator=" || ") AS ?publishers)
   (GROUP_CONCAT(DISTINCT ?inLanguage; separator=" || ") AS ?languages)
   (GROUP_CONCAT(DISTINCT ?educationalUse; separator=" || ") AS ?educationalUses)
   (GROUP_CONCAT(DISTINCT ?distribution; separator=" || ") AS ?distributions)
@@ -40,21 +40,24 @@ SELECT ?dataset
   ?additionalType
   ?datePublished
   ?conditionsOfAccess
+  ?license
 WHERE {
+  BIND(<{identifier}> AS ?dataset)
   ?dataset <http://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
-  OPTIONAL { ?dataset <http://schema.org/description> ?description . }
-  OPTIONAL { ?dataset <http://schema.org/creator> ?creator . }
-  OPTIONAL { ?dataset <http://schema.org/publisher> ?publisher . }
-  OPTIONAL { ?dataset <http://schema.org/additionalType> ?additionalType . }
-  OPTIONAL { ?dataset <http://schema.org/datePublished> ?datePublished . }
-  OPTIONAL { ?dataset <http://schema.org/educationalUse> ?educationalUse . }
-  OPTIONAL { ?dataset <http://schema.org/distribution> ?distribution . }
-  OPTIONAL { ?dataset <http://schema.org/url> ?url . }
-  OPTIONAL { ?dataset <http://schema.org/conditionsOfAccess> ?conditionsOfAccess . }
-  OPTIONAL { ?dataset <http://schema.org/contributor> ?contributor . }
-  OPTIONAL { ?dataset <http://schema.org/inLanguage> ?inLanguage . }
-  OPTIONAL { ?dataset <http://schema.org/producer> ?producer . }
-}
+  OPTIONAL {{ ?dataset <http://schema.org/description> ?description . }}
+  OPTIONAL {{ ?dataset <http://schema.org/creator> ?creator . }}
+  OPTIONAL {{ ?dataset <http://schema.org/publisher> ?publisher . ?publisher <http://schema.org/name> ?publisherName . }}
+  OPTIONAL {{ ?dataset <http://schema.org/additionalType> ?additionalType . }}
+  OPTIONAL {{ ?dataset <http://schema.org/datePublished> ?datePublished . }}
+  OPTIONAL {{ ?dataset <http://schema.org/educationalUse> ?educationalUse . }}
+  OPTIONAL {{ ?dataset <http://schema.org/distribution> ?distribution . }}
+  OPTIONAL {{ ?dataset <http://schema.org/url> ?url . }}
+  OPTIONAL {{ ?dataset <http://schema.org/conditionsOfAccess> ?conditionsOfAccess . }}
+  OPTIONAL {{ ?dataset <http://schema.org/contributor> ?contributor . }}
+  OPTIONAL {{ ?dataset <http://schema.org/inLanguage> ?inLanguage . }}
+  OPTIONAL {{ ?dataset <http://schema.org/producer> ?producer . }}
+  OPTIONAL {{ ?dataset <http://schema.org/license> ?license . }}
+  }
 GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset
 """
 
@@ -65,7 +68,7 @@ SELECT ?dataset
        (GROUP_CONCAT(DISTINCT ?description; separator=" || ") AS ?descriptions)
        (GROUP_CONCAT(DISTINCT ?creator; separator=" || ") AS ?creators)
        (GROUP_CONCAT(DISTINCT ?contributor; separator=" || ") AS ?contributors)
-       (GROUP_CONCAT(DISTINCT ?publisher; separator=" || ") AS ?publishers)
+       (GROUP_CONCAT(DISTINCT ?publisherName; separator=" || ") AS ?publishers)
        (GROUP_CONCAT(DISTINCT ?inLanguage; separator=" || ") AS ?languages)
        (GROUP_CONCAT(DISTINCT ?educationalUse; separator=" || ") AS ?educationalUses)
        (GROUP_CONCAT(DISTINCT ?distribution; separator=" || ") AS ?distributions)
@@ -74,12 +77,13 @@ SELECT ?dataset
        ?additionalType
        ?datePublished
        ?conditionsOfAccess
-WHERE {{
+       ?license
+WHERE {
   BIND(<{identifier}> AS ?dataset)
   ?dataset <http://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
   OPTIONAL {{ ?dataset <http://schema.org/description> ?description . }}
   OPTIONAL {{ ?dataset <http://schema.org/creator> ?creator . }}
-  OPTIONAL {{ ?dataset <http://schema.org/publisher> ?publisher . }}
+  OPTIONAL {{ ?dataset <http://schema.org/publisher> ?publisher . ?publisher <http://schema.org/name> ?publisherName . }}
   OPTIONAL {{ ?dataset <http://schema.org/additionalType> ?additionalType . }}
   OPTIONAL {{ ?dataset <http://schema.org/datePublished> ?datePublished . }}
   OPTIONAL {{ ?dataset <http://schema.org/educationalUse> ?educationalUse . }}
@@ -89,7 +93,8 @@ WHERE {{
   OPTIONAL {{ ?dataset <http://schema.org/contributor> ?contributor . }}
   OPTIONAL {{ ?dataset <http://schema.org/inLanguage> ?inLanguage . }}
   OPTIONAL {{ ?dataset <http://schema.org/producer> ?producer . }}
-}}
+  OPTIONAL {{ ?dataset <http://schema.org/license> ?license . }}
+}
 GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset
 """
 
