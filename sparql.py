@@ -42,7 +42,6 @@ SELECT ?dataset
   ?conditionsOfAccess
   ?license
 WHERE {
-  BIND(<{identifier}> AS ?dataset)
   ?dataset <http://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
   OPTIONAL {{ ?dataset <http://schema.org/description> ?description . }}
   OPTIONAL {{ ?dataset <http://schema.org/creator> ?creator . }}
@@ -120,5 +119,5 @@ WHERE {
             FILTER (strstarts(str(?wiki), 'http://www.wikidata.org'))
         }            
    }
-}
 """
+

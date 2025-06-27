@@ -1,6 +1,6 @@
 import mapping
 import mapping_config
-from sparql import LIST_IDENTIFIERS_QUERY, LIST_RECORDS_QUERY, GET_RECORD_QUERY
+from sparql import LIST_IDENTIFIERS_QUERY, LIST_RECORDS_QUERY, GET_RECORD_QUERY, GET_AGENT_QUERY
 from response import create_base_response, to_pretty_xml, to_json_response, handle_oai_error, OAI_PMH_Error
 from SPARQLWrapper import SPARQLWrapper, JSON
 from datetime import datetime
@@ -231,23 +231,28 @@ def list_records_oai_datacite():
                 sparql_field = SPARQL_STD_DICT.get(target_field)
                 if sparql_field and sparql_field in row:
                     # Create element with appropriate namespace
-                    if source_field == 'creators':
+                    if source_field == OAI_DATACITE_PF+':creator':
                         element = ET.SubElement(datacite, DATACITE_ET + 'creators')
                         set_agent(row[sparql_field]["value"], element, 'creator')
                     elif source_field.startswith(OAI_DATACITE_PF):
                         field_name = source_field.split(':')[1]
                         element = ET.SubElement(datacite, DATACITE_ET + field_name)
+                        # Set the value from SPARQL results
+                        element.text = row[sparql_field]["value"]
                     elif source_field.startswith(OAI_DC_PF):
                         field_name = source_field.split(':')[1]
                         element = ET.SubElement(datacite, DC_ET + field_name)
+                        # Set the value from SPARQL results
+                        element.text = row[sparql_field]["value"]
                     elif source_field.startswith(OAI_OAIRE_PF):
                         field_name = source_field.split(':')[1]
                         element = ET.SubElement(datacite, OAIRE_ET + field_name)
+                        # Set the value from SPARQL results
+                        element.text = row[sparql_field]["value"]
                     else:
                         element = ET.SubElement(datacite, source_field)
-
-                    # Set the value from SPARQL results
-                    element.text = row[sparql_field]["value"]
+                        # Set the value from SPARQL results
+                        element.text = row[sparql_field]["value"]
 
     return to_pretty_xml(root)
 
@@ -258,13 +263,15 @@ def set_agent(agents: str, parent_node: SubElement, element_name: str):
     agent_list = agents.split('||')
     for agent in agent_list:
         # Query data from SPARQL
-        query = LIST_RECORDS_QUERY.replace('{identifier}', agent)
+        query = GET_AGENT_QUERY.replace('{identifier}', agent.strip())
         sparql.setQuery(query)
         results = sparql.query().convert()
         for row in results["results"]["bindings"]:
             element = ET.SubElement(parent_node, DATACITE_ET + element_name)
-            name = ET.SubElement(element, DATACITE_ET + element_name+'_name')
-            name.text= row['name']["value"]
+            name = ET.SubElement(element, DATACITE_ET + element_name+'Name')
+            name.text = row['name']["value"]
+            orcid = ET.SubElement(element, DATACITE_ET + 'identifier')
+            orcid.text = row['orcid']["value"]
 
 
 
