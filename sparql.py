@@ -121,3 +121,19 @@ WHERE {
    }
 """
 
+
+GET_PROJECT_QUERY = """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+SELECT *
+WHERE {
+   BIND(<{identifier}> AS ?project)
+	?project schema:name ?name .
+	?project schema:funder ?funder .
+  	?funder schema:name ?funderName .
+	OPTIONAL {
+		?project schema:identifier ?id .
+	}
+ }
+
+"""
