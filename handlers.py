@@ -259,6 +259,8 @@ def list_records_oai_datacite():
 
 ####
 
+""" SET AGENT """
+
 def set_agent(agents: str, parent_node: SubElement, element_name: str):
     agent_list = agents.split('||')
     for agent in agent_list:
@@ -270,8 +272,14 @@ def set_agent(agents: str, parent_node: SubElement, element_name: str):
             element = ET.SubElement(parent_node, DATACITE_ET + element_name)
             name = ET.SubElement(element, DATACITE_ET + element_name+'Name')
             name.text = row['name']["value"]
+            """
+            aff = ET.SubElement(element, DATACITE_ET + 'affiliation')
+            aff.text = row['affiliation']["value"]
             orcid = ET.SubElement(element, DATACITE_ET + 'identifier')
             orcid.text = row['orcid']["value"]
+            wiki = ET.SubElement(element, DATACITE_ET + 'sameAS')
+            wiki.text = row['sameAs']["value"]
+            """
 
 
 
