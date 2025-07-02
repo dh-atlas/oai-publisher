@@ -231,7 +231,7 @@ def list_records_oai_datacite():
                 sparql_field = SPARQL_STD_DICT.get(target_field)
                 if sparql_field and sparql_field in row:
                     # Create element with appropriate namespace
-                    if source_field == OAI_DATACITE_PF+':creator':
+                    if source_field == OAI_DATACITE_PF + ':creator':
                         element = ET.SubElement(datacite, DATACITE_ET + 'creators')
                         set_agent(row[sparql_field]["value"], element, 'creator')
                     elif source_field.startswith(OAI_DATACITE_PF):
@@ -261,6 +261,7 @@ def list_records_oai_datacite():
 
 """ SET AGENT """
 
+
 def set_agent(agents: str, parent_node: SubElement, element_name: str):
     agent_list = agents.split('||')
     for agent in agent_list:
@@ -270,18 +271,17 @@ def set_agent(agents: str, parent_node: SubElement, element_name: str):
         results = sparql.query().convert()
         for row in results["results"]["bindings"]:
             element = ET.SubElement(parent_node, DATACITE_ET + element_name)
-            name = ET.SubElement(element, DATACITE_ET + element_name+'Name')
+            name = ET.SubElement(element, DATACITE_ET + element_name + 'Name')
             name.text = row['name']["value"]
-            """
-            aff = ET.SubElement(element, DATACITE_ET + 'affiliation')
-            aff.text = row['affiliation']["value"]
-            orcid = ET.SubElement(element, DATACITE_ET + 'identifier')
-            orcid.text = row['orcid']["value"]
-            wiki = ET.SubElement(element, DATACITE_ET + 'sameAS')
-            wiki.text = row['sameAs']["value"]
-            """
-
-
+            if "affName" in row:
+                aff = ET.SubElement(element, DATACITE_ET + 'affiliation')
+                aff.text = row['affName']["value"]
+            if "orcid" in row:
+                orcid = ET.SubElement(element, DATACITE_ET + 'nameIdentifier', nameIdentifierScheme='ORCID', schemaURI='http://orcid.org')
+                orcid.text = row['orcid']["value"]
+            if "wiki" in row:
+                wiki = ET.SubElement(element, DATACITE_ET + 'identifier')
+                wiki.text = row['wiki']["value"]
 
 
 """ GET RECORD """

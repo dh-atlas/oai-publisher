@@ -107,8 +107,8 @@ WHERE {
    BIND(<{identifier}> AS ?agent)
          ?agent schema:name ?name .
         OPTIONAL {
-         ?agent schema:affiliation ?aff .
-        ?aff schema:name ?affName .
+         ?agent schema:affiliation ?affiliation .
+         ?affiliation schema:name ?affName .
         }
         OPTIONAL {
            ?agent schema:identifier ?orcid .
