@@ -1,11 +1,12 @@
 # key= ATALS type = COAR type (OpenAIRE)
 RESOURCE_TYPE_DICT ={
-    '<oaire:resourceType>http://schema.org/Dataset</oaire:resourceType>': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/c_ddb1">dataset</oaire:resourceType>'
-    '<oaire:resourceType>http://www.w3id.org/dh-atlas/DigitalScholarlyEdition</oaire:resourceType>': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/AM6W-6QAW">encoded data</oaire:resourceType>'
-    '<oaire:resourceType>https://w3id.org/dh-atlas/LinkedOpenData</oaire:resourceType>': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/c_ddb1">dataset</oaire:resourceType>'
-    '<oaire:resourceType>http://www.w3id.org/dh-atlas/Ontology</oaire:resourceType>': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/GSZA-Y7V7">knowledge organization system</oaire:resourceType>'
-    '<oaire:resourceType>http://www.w3id.org/dh-atlas/Software</oaire:resourceType>': '<oaire:resourceType resourceTypeGeneral="software" uri="http://purl.org/coar/resource_type/c_5ce6">software</oaire:resourceType>'
-    '<oaire:resourceType>http://www.w3id.org/dh-atlas/TextCollection</oaire:resourceType>': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/RMP5-3GQ6">collection</oaire:resourceType>'
+    'http://schema.org/Dataset': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/c_ddb1">dataset</oaire:resourceType>',
+    'http://www.w3id.org/dh-atlas/DigitalScholarlyEdition': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/AM6W-6QAW">encoded data</oaire:resourceType>',
+    'https://w3id.org/dh-atlas/LinkedOpenData': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/c_ddb1">dataset</oaire:resourceType>',
+    'http://www.w3id.org/dh-atlas/Ontology': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/GSZA-Y7V7">knowledge organization system</oaire:resourceType>',
+    'http://www.w3id.org/dh-atlas/Software': '<oaire:resourceType resourceTypeGeneral="software" uri="http://purl.org/coar/resource_type/c_5ce6">software</oaire:resourceType>',
+    'http://www.w3id.org/dh-atlas/TextCollection': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/RMP5-3GQ6">collection</oaire:resourceType>'
+}
 
 # key=element name value=the sparql variable. Ex name to names
 SPARQL_STD_DICT = {
