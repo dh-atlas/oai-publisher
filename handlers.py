@@ -1,6 +1,6 @@
 import mapping
 import mapping_config
-from sparql import LIST_IDENTIFIERS_QUERY, LIST_RECORDS_QUERY, GET_RECORD_QUERY, GET_AGENT_QUERY
+from sparql import LIST_IDENTIFIERS_QUERY, LIST_RECORDS_QUERY, GET_RECORD_QUERY, GET_AGENT_QUERY, GET_PROJECT_QUERY 
 from response import create_base_response, to_pretty_xml, to_json_response, handle_oai_error, OAI_PMH_Error
 from SPARQLWrapper import SPARQLWrapper, JSON
 from datetime import datetime
@@ -234,6 +234,12 @@ def list_records_oai_datacite():
                     if source_field == OAI_DATACITE_PF + ':creator':
                         element = ET.SubElement(datacite, DATACITE_ET + 'creators')
                         set_agent(row[sparql_field]["value"], element, 'creator')
+                    elif source_field == OAI_DATACITE_PF + ':contributor':
+                        element = ET.SubElement(datacite, DATACITE_ET + 'contributors')
+                        set_agent(row[sparql_field]["value"], element, 'contributor')
+                    elif source_field == OAI_OAIRE_PF + ':fundingReference':
+                        element = ET.SubElement(datacite, OAIRE_ET + 'fundingReferences')
+                        set_project(row[sparql_field]["value"], element, 'fundingReference')
                     elif source_field.startswith(OAI_DATACITE_PF):
                         field_name = source_field.split(':')[1]
                         element = ET.SubElement(datacite, DATACITE_ET + field_name)
@@ -277,11 +283,35 @@ def set_agent(agents: str, parent_node: SubElement, element_name: str):
                 aff = ET.SubElement(element, DATACITE_ET + 'affiliation')
                 aff.text = row['affName']["value"]
             if "orcid" in row:
-                orcid = ET.SubElement(element, DATACITE_ET + 'nameIdentifier', nameIdentifierScheme='ORCID', schemaURI='http://orcid.org')
+                orcid = ET.SubElement(element, DATACITE_ET + 'nameIdentifier', nameIdentifierScheme='ORCID', schemeURI='http://orcid.org')
                 orcid.text = row['orcid']["value"]
             if "wiki" in row:
-                wiki = ET.SubElement(element, DATACITE_ET + 'identifier')
+                wiki = ET.SubElement(element, DATACITE_ET + 'nameIdentifier', nameIdentifierScheme='WIKI', schemeURI='http://www.wikidata.org')
                 wiki.text = row['wiki']["value"]
+
+
+""" SET PROJECT """
+
+def set_project(projects: str, parent_node: SubElement, element_name: str):
+    project_list = projects.split('||')
+    for project in project_list:
+        # Query data from SPARQL
+        query = GET_PROJECT_QUERY.replace('{identifier}', project.strip())
+        sparql.setQuery(query)
+        results = sparql.query().convert()
+        for row in results["results"]["bindings"]:
+            element = ET.SubElement(parent_node, OAIRE_ET + element_name)
+            '''
+            name = ET.SubElement(element, OAIRE_ET + 'name')
+            name.text = row['name']["value"]
+            funder = ET.SubElement(element, OAIRE_ET + 'funder')
+            funder.text = row['funder']["value"]
+            '''
+            funderName = ET.SubElement(element, OAIRE_ET + 'funderName')
+            funderName.text = row['funderName']["value"]
+            if "identifier" in row:
+                identifier = ET.SubElement(element, OAIRE_ET + 'identifier')
+                identifier.text = row['identifier']["value"]
 
 
 """ GET RECORD """
