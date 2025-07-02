@@ -290,7 +290,7 @@ def set_agent(agents: str, parent_node: SubElement, element_name: str):
                 wiki.text = row['wiki']["value"]
 
 
-""" SET PROJECT """
+""" SET PROJECTs """
 
 def set_project(projects: str, parent_node: SubElement, element_name: str):
     project_list = projects.split('||')
