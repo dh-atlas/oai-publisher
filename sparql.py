@@ -31,7 +31,7 @@ SELECT ?dataset
   (GROUP_CONCAT(DISTINCT ?description; separator=" || ") AS ?descriptions)
   (GROUP_CONCAT(DISTINCT ?creator; separator=" || ") AS ?creators)
   (GROUP_CONCAT(DISTINCT ?contributor; separator=" || ") AS ?contributors)
-  (GROUP_CONCAT(DISTINCT ?publisherName; separator=" || ") AS ?publishers)
+  (GROUP_CONCAT(DISTINCT ?publisher; separator=" || ") AS ?publishers)
   (GROUP_CONCAT(DISTINCT ?inLanguage; separator=" || ") AS ?languages)
   (GROUP_CONCAT(DISTINCT ?educationalUse; separator=" || ") AS ?educationalUses)
   (GROUP_CONCAT(DISTINCT ?distribution; separator=" || ") AS ?distributions)
@@ -40,24 +40,23 @@ SELECT ?dataset
   ?additionalType
   ?datePublished
   ?conditionsOfAccess
-  ?license
 WHERE {
-  ?dataset <http://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
-  OPTIONAL {{ ?dataset <http://schema.org/description> ?description . }}
-  OPTIONAL {{ ?dataset <http://schema.org/creator> ?creator . }}
-  OPTIONAL {{ ?dataset <http://schema.org/publisher> ?publisher . ?publisher <http://schema.org/name> ?publisherName . }}
-  OPTIONAL {{ ?dataset <http://schema.org/additionalType> ?additionalType . }}
-  OPTIONAL {{ ?dataset <http://schema.org/datePublished> ?datePublished . }}
-  OPTIONAL {{ ?dataset <http://schema.org/educationalUse> ?educationalUse . }}
-  OPTIONAL {{ ?dataset <http://schema.org/distribution> ?distribution . }}
-  OPTIONAL {{ ?dataset <http://schema.org/url> ?url . }}
-  OPTIONAL {{ ?dataset <http://schema.org/conditionsOfAccess> ?conditionsOfAccess . }}
-  OPTIONAL {{ ?dataset <http://schema.org/contributor> ?contributor . }}
-  OPTIONAL {{ ?dataset <http://schema.org/inLanguage> ?inLanguage . }}
-  OPTIONAL {{ ?dataset <http://schema.org/producer> ?producer . }}
-  OPTIONAL {{ ?dataset <http://schema.org/license> ?license . }}
-  }
-GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset ?license
+  ?dataset <https://schema.org/name> ?name ; rdf:type <httpss://schema.org/Dataset> .
+  OPTIONAL { ?dataset <https://schema.org/description> ?description . }
+  OPTIONAL { ?dataset <https://schema.org/creator> ?creator . }
+  OPTIONAL { ?dataset <https://schema.org/publisher> ?publisher . }
+  OPTIONAL { ?dataset <https://schema.org/additionalType> ?additionalType . }
+  OPTIONAL { ?dataset <https://schema.org/datePublished> ?datePublished . }
+  OPTIONAL { ?dataset <https://schema.org/educationalUse> ?educationalUse . }
+  OPTIONAL { ?dataset <https://schema.org/distribution> ?distribution . }
+  OPTIONAL { ?dataset <https://schema.org/url> ?url . }
+  OPTIONAL { ?dataset <https://schema.org/conditionsOfAccess> ?conditionsOfAccess . }
+  OPTIONAL { ?dataset <https://schema.org/contributor> ?contributor . }
+  OPTIONAL { ?dataset <https://schema.org/inLanguage> ?inLanguage . }
+  OPTIONAL { ?dataset <https://schema.org/producer> ?producer . }
+}
+GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset
+
 """
 
 GET_RECORD_QUERY = """
