@@ -18,7 +18,7 @@ WHERE {
 LIST_IDENTIFIERS_QUERY = """SELECT DISTINCT ?dataset
 WHERE {
   
-  ?dataset <http://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
+  ?dataset <https://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
 }
 """
 
@@ -41,7 +41,7 @@ SELECT ?dataset
   ?datePublished
   ?conditionsOfAccess
 WHERE {
-  ?dataset <https://schema.org/name> ?name ; rdf:type <httpss://schema.org/Dataset> .
+  ?dataset <https://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
   OPTIONAL { ?dataset <https://schema.org/description> ?description . }
   OPTIONAL { ?dataset <https://schema.org/creator> ?creator . }
   OPTIONAL { ?dataset <https://schema.org/publisher> ?publisher . }
@@ -98,7 +98,7 @@ GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset ?license
 
 
 GET_AGENT_QUERY = """
-PREFIX schema: <http://schema.org/>
+PREFIX schema: <https://schema.org/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 SELECT *
