@@ -41,7 +41,7 @@ SELECT ?dataset
   ?datePublished
   ?conditionsOfAccess
 WHERE {
-  ?dataset <https://schema.org/name> ?name ; rdf:type <httpss://schema.org/Dataset> .
+  ?dataset <https://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
   OPTIONAL { ?dataset <https://schema.org/description> ?description . }
   OPTIONAL { ?dataset <https://schema.org/creator> ?creator . }
   OPTIONAL { ?dataset <https://schema.org/publisher> ?publisher . }
