@@ -1,14 +1,24 @@
-# key= ATALS type = COAR type (OpenAIRE)
+# key = ATALS type = COAR type (OpenAIRE)
 RESOURCE_TYPE_DICT ={
-    'http://schema.org/Dataset': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/c_ddb1">dataset</oaire:resourceType>',
-    'http://www.w3id.org/dh-atlas/DigitalScholarlyEdition': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/AM6W-6QAW">encoded data</oaire:resourceType>',
-    'https://w3id.org/dh-atlas/LinkedOpenData': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/c_ddb1">dataset</oaire:resourceType>',
-    'http://www.w3id.org/dh-atlas/Ontology': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/GSZA-Y7V7">knowledge organization system</oaire:resourceType>',
-    'http://www.w3id.org/dh-atlas/Software': '<oaire:resourceType resourceTypeGeneral="software" uri="http://purl.org/coar/resource_type/c_5ce6">software</oaire:resourceType>',
-    'http://www.w3id.org/dh-atlas/TextCollection': '<oaire:resourceType resourceTypeGeneral="dataset" uri="http://purl.org/coar/resource_type/RMP5-3GQ6">collection</oaire:resourceType>'
+    'https://schema.org/Dataset': ['dataset','dataset'],
+    'https://w3id.org/dh-atlas/DigitalScholarlyEdition': ['dataset','encoded data'],
+    'https://w3id.org/dh-atlas/LinkedOpenData':['dataset','dataset'],
+    'https://w3id.org/dh-atlas/Ontology': ['dataset','knowledge organization system'],
+    'https://w3id.org/dh-atlas/Software': ['software','software'],
+    'https://w3id.org/dh-atlas/TextCollection': ['dataset','collection'],
+    'https://w3id.org/dh-atlas/3DDigitalTwin':['dataset','dataset'], 
+    'https://w3id.org/dh-atlas/LanguageModel': ['software','software']
 }
 
-# key=element name value=the sparql variable. Ex name to names
+# key = rightURI = COAR label
+RIGHTS_DICT = {
+    'http://purl.org/coar/access_right/c_abf2': 'open access',
+    'http://purl.org/coar/access_right/c_f1cf': 'embargoed access',
+    'http://purl.org/coar/access_right/c_16ec': 'restricted access',
+    'http://purl.org/coar/access_right/c_14cb': 'metadata only access'
+}
+
+# key = element name value = the sparql variable. Ex name to names
 SPARQL_STD_DICT = {
     'dataset': 'dataset',
     'name': 'names',
@@ -23,11 +33,14 @@ SPARQL_STD_DICT = {
     'producer': 'producers',
     'additionalType': 'additionalType',
     'datePublished': 'datePublished',
-    'conditionsOfAccess': 'conditionsOfAccess'
+    'accessRights': 'accessRights',
+    'license' : 'license',
+    'uri' : 'uri'
 }
 
-# key = oai_datacite element name value=std dict element name. Ex title=name
+# key = oai_datacite element name value = std dict element name. Ex title=name
 DATACITE_TO_STD_DICT = {
+    'oai_datacite:identifier': ['uri'],
     'oai_datacite:title': ['name'],
     'oai_dc:description': ['description'],
     'oai_datacite:creator': ['creator'],
@@ -37,8 +50,10 @@ DATACITE_TO_STD_DICT = {
     'oai_datacite:date': ['datePublished'],
     'oai_dc:language': ['inLanguage'],
     'oai_datacite:subject': ['educationalUse'],
-    'oaire:file': ['distribution', 'url'],
+    'oaire:file': ['distribution'],
     'oaire:fundingReference': ['producer'],
-    'oai_datacite:rights': ['conditionsOfAccess']
+    'oai_datacite:rights': ['accessRights'],
+    'oaire:licenseCondition' : ['license'],
+    'oai_datacite:alternateIdentifier': ['url']
 }
 

@@ -1,5 +1,3 @@
-# sparql.py
-
 LIST_IDENTIFIERS_QUERY_1 = """
 PREFIX schema: <https://schema.org/>
 PREFIX fabio: <http://purl.org/spar/fabio/>
@@ -39,7 +37,8 @@ SELECT ?dataset
   (GROUP_CONCAT(DISTINCT ?producer; separator=" || ") AS ?producers)
   ?additionalType
   ?datePublished
-  ?conditionsOfAccess
+  ?accessRights
+  ?license
 WHERE {
   ?dataset <https://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
   OPTIONAL { ?dataset <https://schema.org/description> ?description . }
@@ -50,52 +49,53 @@ WHERE {
   OPTIONAL { ?dataset <https://schema.org/educationalUse> ?educationalUse . }
   OPTIONAL { ?dataset <https://schema.org/distribution> ?distribution . }
   OPTIONAL { ?dataset <https://schema.org/url> ?url . }
-  OPTIONAL { ?dataset <https://schema.org/conditionsOfAccess> ?conditionsOfAccess . }
+  OPTIONAL { ?dataset <http://purl.org/dc/terms/accessRights> ?accessRights . }
   OPTIONAL { ?dataset <https://schema.org/contributor> ?contributor . }
   OPTIONAL { ?dataset <https://schema.org/inLanguage> ?inLanguage . }
   OPTIONAL { ?dataset <https://schema.org/producer> ?producer . }
+  OPTIONAL { ?dataset <https://schema.org/license> ?license . }
 }
-GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset
-
+GROUP BY ?additionalType ?datePublished ?accessRights ?dataset ?license
 """
 
 GET_RECORD_QUERY = """
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ?dataset
-       (GROUP_CONCAT(DISTINCT ?name; separator=" || ") AS ?names)
-       (GROUP_CONCAT(DISTINCT ?description; separator=" || ") AS ?descriptions)
-       (GROUP_CONCAT(DISTINCT ?creator; separator=" || ") AS ?creators)
-       (GROUP_CONCAT(DISTINCT ?contributor; separator=" || ") AS ?contributors)
-       (GROUP_CONCAT(DISTINCT ?publisherName; separator=" || ") AS ?publishers)
-       (GROUP_CONCAT(DISTINCT ?inLanguage; separator=" || ") AS ?languages)
-       (GROUP_CONCAT(DISTINCT ?educationalUse; separator=" || ") AS ?educationalUses)
-       (GROUP_CONCAT(DISTINCT ?distribution; separator=" || ") AS ?distributions)
-       (GROUP_CONCAT(DISTINCT ?url; separator=" || ") AS ?urls)
-       (GROUP_CONCAT(DISTINCT ?producer; separator=" || ") AS ?producers)
-       ?additionalType
-       ?datePublished
-       ?conditionsOfAccess
-       ?license
-WHERE {
-  BIND(<{identifier}> AS ?dataset)
-  ?dataset <http://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
-  OPTIONAL {{ ?dataset <http://schema.org/description> ?description . }}
-  OPTIONAL {{ ?dataset <http://schema.org/creator> ?creator . }}
-  OPTIONAL {{ ?dataset <http://schema.org/publisher> ?publisher . ?publisher <http://schema.org/name> ?publisherName . }}
-  OPTIONAL {{ ?dataset <http://schema.org/additionalType> ?additionalType . }}
-  OPTIONAL {{ ?dataset <http://schema.org/datePublished> ?datePublished . }}
-  OPTIONAL {{ ?dataset <http://schema.org/educationalUse> ?educationalUse . }}
-  OPTIONAL {{ ?dataset <http://schema.org/distribution> ?distribution . }}
-  OPTIONAL {{ ?dataset <http://schema.org/url> ?url . }}
-  OPTIONAL {{ ?dataset <http://schema.org/conditionsOfAccess> ?conditionsOfAccess . }}
-  OPTIONAL {{ ?dataset <http://schema.org/contributor> ?contributor . }}
-  OPTIONAL {{ ?dataset <http://schema.org/inLanguage> ?inLanguage . }}
-  OPTIONAL {{ ?dataset <http://schema.org/producer> ?producer . }}
-  OPTIONAL {{ ?dataset <http://schema.org/license> ?license . }}
-}
-GROUP BY ?additionalType ?datePublished ?conditionsOfAccess ?dataset ?license
-"""
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
+SELECT ?dataset
+  (GROUP_CONCAT(DISTINCT ?name; separator=" || ") AS ?names)
+  (GROUP_CONCAT(DISTINCT ?description; separator=" || ") AS ?descriptions)
+  (GROUP_CONCAT(DISTINCT ?creator; separator=" || ") AS ?creators)
+  (GROUP_CONCAT(DISTINCT ?contributor; separator=" || ") AS ?contributors)
+  (GROUP_CONCAT(DISTINCT ?publisher; separator=" || ") AS ?publishers)
+  (GROUP_CONCAT(DISTINCT ?inLanguage; separator=" || ") AS ?languages)
+  (GROUP_CONCAT(DISTINCT ?educationalUse; separator=" || ") AS ?educationalUses)
+  (GROUP_CONCAT(DISTINCT ?distribution; separator=" || ") AS ?distributions)
+  (GROUP_CONCAT(DISTINCT ?url; separator=" || ") AS ?urls)
+  (GROUP_CONCAT(DISTINCT ?producer; separator=" || ") AS ?producers)
+  ?additionalType
+  ?datePublished
+  ?accessRights
+  ?license
+WHERE {{
+  BIND(<{identifier}> AS ?dataset)
+  ?dataset <https://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
+  OPTIONAL {{ ?dataset <https://schema.org/description> ?description . }}
+  OPTIONAL {{ ?dataset <https://schema.org/creator> ?creator . }}
+  OPTIONAL {{ ?dataset <https://schema.org/publisher> ?publisher . ?publisher <https://schema.org/name> ?publisherName . }}   #vedi se necessario mantenere pubName qui
+  OPTIONAL {{ ?dataset <https://schema.org/additionalType> ?additionalType . }}
+  OPTIONAL {{ ?dataset <https://schema.org/datePublished> ?datePublished . }}
+  OPTIONAL {{ ?dataset <https://schema.org/educationalUse> ?educationalUse . }}
+  OPTIONAL {{ ?dataset <https://schema.org/distribution> ?distribution . }}
+  OPTIONAL {{ ?dataset <https://schema.org/url> ?url . }}
+  OPTIONAL {{ ?dataset <http://purl.org/dc/terms/accessRights> ?accessRights . }}
+  OPTIONAL {{ ?dataset <https://schema.org/contributor> ?contributor . }}
+  OPTIONAL {{ ?dataset <https://schema.org/inLanguage> ?inLanguage . }}
+  OPTIONAL {{ ?dataset <https://schema.org/producer> ?producer . }}
+  OPTIONAL {{ ?dataset <https://schema.org/license> ?license . }}
+}}
+GROUP BY ?additionalType ?datePublished ?accessRights ?dataset ?license
+"""
 
 GET_AGENT_QUERY = """
 PREFIX schema: <https://schema.org/>
@@ -121,19 +121,3 @@ WHERE {
 """
 
 
-GET_PROJECT_QUERY = """
-PREFIX schema: <http://schema.org/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-SELECT *
-WHERE {
-   BIND(<{identifier}> AS ?project)
-	?project schema:name ?name .
-	?project schema:funder ?funder .
-  ?funder schema:name ?funderName .
-	OPTIONAL {
-		?project schema:identifier ?identifier .
-	}
- }
-
-"""
