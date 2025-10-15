@@ -82,7 +82,7 @@ WHERE {{
   ?dataset <https://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
   OPTIONAL {{ ?dataset <https://schema.org/description> ?description . }}
   OPTIONAL {{ ?dataset <https://schema.org/creator> ?creator . }}
-  OPTIONAL {{ ?dataset <https://schema.org/publisher> ?publisher . ?publisher <https://schema.org/name> ?publisherName . }}   #vedi se necessario mantenere pubName qui
+  OPTIONAL {{ ?dataset <https://schema.org/publisher> ?publisher . ?publisher <https://schema.org/name> ?publisherName . }}  
   OPTIONAL {{ ?dataset <https://schema.org/additionalType> ?additionalType . }}
   OPTIONAL {{ ?dataset <https://schema.org/datePublished> ?datePublished . }}
   OPTIONAL {{ ?dataset <https://schema.org/educationalUse> ?educationalUse . }}

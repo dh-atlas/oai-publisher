@@ -53,15 +53,20 @@ def handler_identify():
     ET.SubElement(identify, f"{{{OAI_NS}}}repositoryName").text = OAI_SPARQL_BE
     ET.SubElement(identify, f"{{{OAI_NS}}}baseURL").text = BASE_URL
     ET.SubElement(identify, f"{{{OAI_NS}}}protocolVersion").text = "2.0"
-    ET.SubElement(identify, f"{{{OAI_NS}}}adminEmail").text = "admin@example.org"
+    admins = ET.SubElement(identify, f"{{{OAI_NS}}}admins")
+    ET.SubElement(admins, f"{{{OAI_NS}}}adminEmail").text = "giorgia.rubin@cnr.it | g.rubin@studenti.unipi.it" 
+    ET.SubElement(admins, f"{{{OAI_NS}}}adminEmail").text = "alessia.bardi@cnr.it"
+    ET.SubElement(admins, f"{{{OAI_NS}}}adminEmail").text = "riccardo.delgratta@cnr.it"
+    ET.SubElement(admins, f"{{{OAI_NS}}}adminEmail").text = "angelo.delgrosso@cnr.it"
+    ET.SubElement(admins, f"{{{OAI_NS}}}adminEmail").text = "marilena.daquino@unibo.it"
     ET.SubElement(identify, f"{{{OAI_NS}}}earliestDatestamp").text = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     ET.SubElement(identify, f"{{{OAI_NS}}}deletedRecord").text = "no"
-    ET.SubElement(identify, f"{{{OAI_NS}}}granularity").text = "YYYY-MM-DDThh:mm:ssZ"
+    ET.SubElement(identify, f"{{{OAI_NS}}}granularity").text = "YYYY-MM-DDThh:mm:ssZ" #
     return to_pretty_xml(root)
 
 
 
-""" LISTIDENTIFIERS """
+""" LIST IDENTIFIERS """
 
 def handler_list_identifiers(args):
     root = create_base_response("ListIdentifiers")
@@ -79,14 +84,14 @@ def handler_list_identifiers(args):
 
 """ LIST RECORDS """
 
-############## LIST RECORDS NO metadata prefix ##################
-
-
 def handler_list_records(metadata_prefix):
     if metadata_prefix is None:  # no metadataPrexif to test SPARQL results with default namespace
         return handler_list_records_no_mp()
     else:
         return handler_list_records_mp(metadata_prefix)
+
+
+############## LIST RECORDS NO metadata prefix ##################
 
 
 def handler_list_records_no_mp():
@@ -118,9 +123,11 @@ def handler_list_records_no_mp():
         for k, v in SPARQL_STD_DICT.items():
             add_metadata(k, v)  # ,OAI_NS)
 
+
+        ###enter here the fields process according to mapping dictionaries 
+
     # serialize in indented XML
     return to_pretty_xml(root)
-
 
 
 
@@ -131,67 +138,11 @@ def handler_list_records_mp(metadata_prefix: str):
     if metadata_prefix == OAI_DATACITE_PF:
         return list_records_oai_datacite()
 
-
-def list_records_oai_datacite_1():
-    # Get data from SPARQL
-    # base XML for OAI-PMH ListRecords structure
-    root = create_base_response("ListRecords")
-    list_records_elem = ET.SubElement(root, f"{{{OAI_NS}}}ListRecords")
-
-    # query
-    sparql.setQuery(LIST_RECORDS_QUERY)
-    results = sparql.query().convert()
-    # Create XML response with proper headers
-    root, metadata, datacite = create_oai_datacite_header()
-    if not results["results"]["bindings"]:
-        raise Exception("No records found.")
-
-    # loop over records
-    i = 1
-    list_records = ET.SubElement(root, "ListRecords")
-
-    for row in results["results"]["bindings"]:
-        print("i= ", i)
-
-        # Add record header
-        record = ET.SubElement(list_records, "record")
-        header = ET.SubElement(record, "header")
-        # Add identifier
-        id_element = ET.SubElement(header, "identifier")
-        identifier = row["dataset"]["value"]
-        id_element.text = identifier
-        datacite_identifier = ET.SubElement(datacite, "datacite:identifier", {"identifierType": "URI"})
-        datacite_identifier.text = identifier
-        # Add datestamp
-        datestamp = ET.SubElement(header, "datestamp")
-        datestamp.text = row.get("dateModified", {}).get("value", datetime.utcnow().strftime("%Y-%m-%d"))
-
-        # Attach metadata element to record
-        record.append(metadata)
-
-        # Process all fields according to mapping dictionaries
-        for source_field, target_fields in DATACITE_TO_STD_DICT.items():
-            for target_field in target_fields:
-                # Get the corresponding SPARQL field name
-                sparql_field = SPARQL_STD_DICT.get(target_field)
-                if sparql_field and sparql_field in row:
-                    # Create element with appropriate namespace
-                    if source_field.startswith(OAI_DATACITE_PF):
-                        field_name = source_field.split(':')[1]
-                        element = ET.SubElement(datacite, DATACITE_ET + field_name)
-                    elif source_field.startswith(OAI_DC_PF):
-                        field_name = source_field.split(':')[1]
-                        element = ET.SubElement(datacite, DC_ET + field_name)
-                    elif source_field.startswith(OAI_OAIRE_PF):
-                        field_name = source_field.split(':')[1]
-                        element = ET.SubElement(datacite, OAIRE_ET + field_name)
-                    else:
-                        element = ET.SubElement(datacite, source_field)
-                    # Set the value from SPARQL results
-                    element.text = row[sparql_field]["value"]
-        i = i + 1
-    return to_pretty_xml(root)
-
+'''
+datacite record formats the native output of blazegraph SPARQL endpoint so that:
+1. it uses the correct namespaces for datacite
+2. it expands multiple values separated by ||
+'''
 
 def list_records_oai_datacite():
     # Create base OAI-PMH response with proper headers
@@ -208,13 +159,6 @@ def list_records_oai_datacite():
         raise Exception("No records found.")
 
     # Process each record
-
-    # Count for log to be completed
-    num_lic=0
-    num_access=0
-    sanity_list_lic=[]
-    sanity_list_ac=[]
-
     for row in results["results"]["bindings"]:
         # Create new record element
         record = ET.SubElement(list_records, "record")
@@ -247,153 +191,7 @@ def list_records_oai_datacite():
         datacite_identifier = ET.SubElement(datacite, "datacite:identifier", {"identifierType": "URI"})
         datacite_identifier.text = identifier
 
-        # Process all fields according to mapping dictionaries
-        for source_field, target_fields in DATACITE_TO_STD_DICT.items():
-            for target_field in target_fields:
-                # Get the corresponding SPARQL field name
-                sparql_field = SPARQL_STD_DICT.get(target_field)
-                if sparql_field and sparql_field in row:
-
-                    # Create element with appropriate namespace
-
-                    #TITLE                                                    
-                    if target_field == 'name':
-                        names_element = ET.SubElement(datacite, DATACITE_ET + 'titles')
-                        original_text = row[sparql_field]["value"]
-                        for part in original_text.split("||"):
-                            part = part.strip()
-                            if part:
-                                name_element = ET.SubElement(names_element, DATACITE_ET + 'title')
-                                name_element.text = part                            
-
-                    #DESCRIPTION
-                    elif target_field == 'description':
-                        descriptions_element = ET.SubElement(datacite, DC_ET + 'descriptions')
-                        original_text = row[sparql_field]["value"]
-                        for part in original_text.split("||"):
-                            part = part.strip()
-                            if part:
-                                description_element = ET.SubElement(descriptions_element, DC_ET + 'description')
-                                description_element.text = part
-
-                    #CREATOR
-                    elif source_field == OAI_DATACITE_PF + ':creator':
-                        element = ET.SubElement(datacite, DATACITE_ET + 'creators')
-                        set_agent(row[sparql_field]["value"], element, 'creator')
-
-                    #CONTRIBUTOR
-                    elif source_field == OAI_DATACITE_PF + ':contributor':
-                        element = ET.SubElement(datacite, DATACITE_ET + 'contributors')                 #attrubute type: if orcid-> type= "researcher" / if not-> type= "other"
-                        set_agent(row[sparql_field]["value"], element, 'contributor')
-
-                    #PUBLISHER
-                    elif source_field == OAI_DC_PF + ':publisher':
-                        element = ET.SubElement(datacite, DATACITE_ET + 'publishers')
-                        set_publisher(row[sparql_field]["value"], element, 'publisher')
-
-                    #RESEARCH TYPE
-                    elif target_field == 'additionalType':
-                        element = ET.SubElement(datacite, OAIRE_ET + 'resourceType')
-                        uri_rt = row[sparql_field]["value"]
-                        rt_general= "Not Found"
-                        value= "Not Found"
-                        ret = RESOURCE_TYPE_DICT.get(uri_rt)
-                        rt_general=ret[0]
-                        value=ret[1]
-                        element.set("resourceTypeGeneral",rt_general)
-                        element.set("uri",uri_rt)
-                        element.text = value
-
-                    #DATE as it is
-
-                    #LANGUAGE
-                    elif target_field == 'inLanguage':
-                        element = ET.SubElement(datacite, DC_ET + 'languages')
-                        lang = row[sparql_field]["value"]
-                        for part in lang.split("||"):
-                            part = part.strip()
-                            if part:
-                                lang_code = part[-3:]
-                                lang_element = ET.SubElement(element, DC_ET + "language")
-                                lang_element.text = lang_code    
-                                       
-                    #SUBJECT
-                    elif target_field == 'educationalUse':
-                        element = ET.SubElement(datacite, DATACITE_ET + 'subjects')
-                        subject = row[sparql_field]["value"]
-                        for part in subject.split("||"):
-                            part = part.strip()
-                            if part:
-                                token = part.rsplit("/", 1)[-1]
-                                subject_element = ET.SubElement(element, DATACITE_ET + "subject")
-                                subject_element.text = token
-
-                    #FILE
-                    elif target_field == 'distribution':
-                        files_element = ET.SubElement(datacite, OAIRE_ET + 'files')
-                        original_text = row[sparql_field]["value"]
-                        for part in original_text.split("||"):
-                            part = part.strip()
-                            if part:
-                                file_element = ET.SubElement(files_element, OAIRE_ET + 'file')
-                                file_element.text = part
-
-                    #ALTERNATIVE IDENTIFIER
-                    elif target_field == 'url':
-                        element = ET.SubElement(datacite, DATACITE_ET + 'alternativeIdentifiers')  
-                        url = row[sparql_field]["value"]
-                        for part in url.split("||"):
-                            part = part.strip()
-                            if part:
-                                identifier_element = ET.SubElement(element, DATACITE_ET + 'alternativeIdentifier', {'alternateIdentifierType': 'URL'})
-                                identifier_element.text = part
-
-                    #FUNDING REFERENCE
-                    elif source_field == OAI_OAIRE_PF + ':fundingReference':
-                        element = ET.SubElement(datacite, OAIRE_ET + 'fundingReferences')
-                        set_project(row[sparql_field]["value"], element, 'fundingReference')
-
-                    #ACCESS RIGHT
-                    elif target_field == 'accessRights':
-                        num_access=num_access+1
-                        sanity_list_ac.append(identifier)
-                        access_rights = ET.SubElement(datacite, DATACITE_ET + 'rights')
-                        rights = ET.SubElement(access_rights, DATACITE_ET + 'right') 
-                        uri_access = row[sparql_field]["value"]
-                        rights.set("rightsURI",uri_access)
-                        access= "Not Found"
-                        access = RIGHTS_DICT.get(uri_access)
-                        rights.text = access
-
-                    #LICENSE
-                    elif sparql_field == 'license':
-                        num_lic=num_lic+1
-                        sanity_list_lic.append(identifier)
-                        element = ET.SubElement(datacite, OAIRE_ET + 'licenseCondition')
-                        uri = row[sparql_field]["value"]
-                        lic_name = get_label(uri)
-                        element.text = lic_name
-
-
-
-                    elif source_field.startswith(OAI_DATACITE_PF):
-                        field_name = source_field.split(':')[1]
-                        element = ET.SubElement(datacite, DATACITE_ET + field_name)
-                        # Set the value from SPARQL results
-                        element.text = row[sparql_field]["value"]
-                    elif source_field.startswith(OAI_DC_PF):
-                        field_name = source_field.split(':')[1]
-                        element = ET.SubElement(datacite, DC_ET + field_name)
-                        # Set the value from SPARQL results
-                        element.text = row[sparql_field]["value"]
-                    elif source_field.startswith(OAI_OAIRE_PF):
-                        field_name = source_field.split(':')[1]
-                        element = ET.SubElement(datacite, OAIRE_ET + field_name)
-                        # Set the value from SPARQL results
-                        element.text = row[sparql_field]["value"]
-                        
-                    else:
-                        pass
+        datacite = return_formatted_datacite(datacite, row)        
                     
     #Count for log
     #print(f"Founded: {num_lic} licenses ({sanity_list_lic}) and {num_access} accesseRights")
@@ -462,6 +260,8 @@ def set_publisher(agents: str, parent_node: SubElement, element_name: str):
 
 """ GET RECORD """
 
+# get record metadataprefix
+
 def handler_get_record(identifier: str, metadata_prefix: str):
     # metadataPrefix logic
     if metadata_prefix is None:  # no metadataPrexif to test SPARQL results with default namespace
@@ -501,22 +301,6 @@ def handler_get_record_no_mp(identifier: str):
     for k, v in SPARQL_STD_DICT.items():
         add_element(k, v, OAI_NS)
 
-    # Campi da aggiungere
-    '''add_element("title", "names")
-    add_element("description", "descriptions")
-    add_element("creator", "creators")
-    add_element("contributor", "contributors")
-    add_element("publisher", "publishers")
-    add_element("language", "languages")
-    add_element("educationalUse", "educationalUses")
-    add_element("relation", "distributions")
-    add_element("identifier", "urls")
-    add_element("source", "producers")
-    add_element("type", "additionalType")
-    add_element("date", "datePublished")
-    add_element("rights", "conditionsOfAccess")
-    '''
-
     return to_pretty_xml(root)
 
 
@@ -524,8 +308,62 @@ def handler_get_record_mp(identifier: str, metadata_prefix: str):
     if metadata_prefix == OAI_DATACITE_PF:
         return get_record_oai_datacite(identifier)
 
-
 def get_record_oai_datacite(identifier):
+    
+    # Create base OAI-PMH response with proper headers
+    root = create_base_response("GetRecord")
+
+    # Create ListRecords element only once
+    list_records = ET.SubElement(root, "GetRecord")
+
+    # Query data from SPARQL
+    sparql.setQuery(GET_RECORD_QUERY.format(identifier=identifier))
+    results = sparql.query().convert()
+    
+    if not results["results"]["bindings"]:
+        raise Exception("No records found.")
+
+    # Process each record
+    for row in results["results"]["bindings"]:
+        # Create new record element
+        record = ET.SubElement(list_records, "record")
+
+        # Add header
+        header = ET.SubElement(record, "header")
+
+        # Add identifier to header
+        identifier = row["dataset"]["value"]
+        id_element = ET.SubElement(header, "identifier")
+        id_element.text = identifier
+
+        # Add datestamp to header
+        datestamp = ET.SubElement(header, "datestamp")
+        datestamp.text = row.get("dateModified", {}).get("value", datetime.utcnow().strftime("%Y-%m-%d"))
+
+        # Create new metadata element for this record
+        metadata = ET.SubElement(record, "metadata")
+
+        # Create new oai_datacite element for this record
+        datacite = ET.SubElement(metadata, "oai_datacite", {
+            "xmlns": DATACITE_NS,
+            "xmlns:datacite": DATACITE_KERNEL_NS,
+            "xmlns:dc": DC_NS,
+            "xmlns:oaire": OAIRE_NS,
+            "xsi:schemaLocation": f"{DATACITE_NS} {DATACITE_SCHEMA_LOCATION}"
+        })
+
+        # Add datacite identifier
+        datacite_identifier = ET.SubElement(datacite, "datacite:identifier", {"identifierType": "URI"})
+        datacite_identifier.text = identifier
+
+        datacite = return_formatted_datacite(datacite, row)        
+                    
+    #Count for log
+    #print(f"Founded: {num_lic} licenses ({sanity_list_lic}) and {num_access} accesseRights")
+    return to_pretty_xml(root)
+
+
+def get_record_oai_datacite_old(identifier):
     # Get data from SPARQL
     sparql.setQuery(GET_RECORD_QUERY.format(identifier=identifier))
     results = sparql.query().convert()
@@ -555,29 +393,6 @@ def get_record_oai_datacite(identifier):
     # Attach metadata element to record
     #record.append(metadata)
     record.append(mapping.json_to_datacite(results, mapping_config.mapping_config_openaire))
-
-    # Process all fields according to mapping dictionaries
-    # for source_field, target_fields in DATACITE_TO_STD_DICT.items():
-    #     for target_field in target_fields:
-    #         # Get the corresponding SPARQL field name
-    #         print(source_field, target_fields)
-    #         sparql_field = SPARQL_STD_DICT.get(target_field)
-    #         if sparql_field and sparql_field in row:
-    #             # Create element with appropriate namespace
-    #             if source_field.startswith(OAI_DATACITE_PF):
-    #                 field_name = source_field.split(':')[1]
-    #                 element = ET.SubElement(datacite, DATACITE_ET + field_name)
-    #             elif source_field.startswith(OAI_DC_PF):
-    #                 field_name = source_field.split(':')[1]
-    #                 element = ET.SubElement(datacite, DC_ET + field_name)
-    #             elif source_field.startswith(OAI_OAIRE_PF):
-    #                 field_name = source_field.split(':')[1]
-    #                 element = ET.SubElement(datacite, OAIRE_ET + field_name)
-    #             else:
-    #                 element = ET.SubElement(datacite, source_field)
-    #
-    #             # Set the value from SPARQL results
-    #             element.text = row[sparql_field]["value"]
 
     return to_pretty_xml(root)
 
@@ -620,3 +435,162 @@ def list_metadata_formats(args):
     SubElement(format_el, f"{{{OAI_NS}}}metadataNamespace").text = DATACITE_NS
 
     return to_pretty_xml(root)
+
+
+
+def return_formatted_datacite(datacite, row):
+
+    # Count for log to be completed
+    num_lic=0
+    num_access=0
+    sanity_list_lic=[]
+    sanity_list_ac=[]
+
+    # Process all fields according to mapping dictionaries
+    for source_field, target_fields in DATACITE_TO_STD_DICT.items():
+        for target_field in target_fields:
+            # Get the corresponding SPARQL field name
+            sparql_field = SPARQL_STD_DICT.get(target_field)
+            if sparql_field and sparql_field in row:
+
+                # Create element with appropriate namespace
+
+                #TITLE                                                    
+                if target_field == 'name':
+                    names_element = ET.SubElement(datacite, DATACITE_ET + 'titles')
+                    original_text = row[sparql_field]["value"]
+                    for part in original_text.split("||"):
+                        part = part.strip()
+                        if part:
+                            name_element = ET.SubElement(names_element, DATACITE_ET + 'title')
+                            name_element.text = part                            
+
+                #DESCRIPTION
+                elif target_field == 'description':
+                    descriptions_element = ET.SubElement(datacite, DC_ET + 'descriptions')
+                    original_text = row[sparql_field]["value"]
+                    for part in original_text.split("||"):
+                        part = part.strip()
+                        if part:
+                            description_element = ET.SubElement(descriptions_element, DC_ET + 'description')
+                            description_element.text = part
+
+                #CREATOR
+                elif source_field == OAI_DATACITE_PF + ':creator':
+                    element = ET.SubElement(datacite, DATACITE_ET + 'creators')
+                    set_agent(row[sparql_field]["value"], element, 'creator')
+
+                #CONTRIBUTOR
+                elif source_field == OAI_DATACITE_PF + ':contributor':
+                    element = ET.SubElement(datacite, DATACITE_ET + 'contributors')                 #attrubute type: if orcid-> type= "researcher" / if not-> type= "other"
+                    set_agent(row[sparql_field]["value"], element, 'contributor')
+
+                #PUBLISHER
+                elif source_field == OAI_DC_PF + ':publisher':
+                    element = ET.SubElement(datacite, DATACITE_ET + 'publishers')
+                    set_publisher(row[sparql_field]["value"], element, 'publisher')
+
+                #RESEARCH TYPE
+                elif target_field == 'additionalType':
+                    element = ET.SubElement(datacite, OAIRE_ET + 'resourceType')
+                    uri_rt = row[sparql_field]["value"]
+                    rt_general= "Not Found"
+                    value= "Not Found"
+                    ret = RESOURCE_TYPE_DICT.get(uri_rt)
+                    rt_general=ret[0]
+                    value=ret[1]
+                    element.set("resourceTypeGeneral",rt_general)
+                    element.set("uri",uri_rt)
+                    element.text = value
+
+                #DATE as it is
+
+                #LANGUAGE
+                elif target_field == 'inLanguage':
+                    element = ET.SubElement(datacite, DC_ET + 'languages')
+                    lang = row[sparql_field]["value"]
+                    for part in lang.split("||"):
+                        part = part.strip()
+                        if part:
+                            lang_code = part[-3:]
+                            lang_element = ET.SubElement(element, DC_ET + "language")
+                            lang_element.text = lang_code    
+                                    
+                #SUBJECT
+                elif target_field == 'educationalUse':
+                    element = ET.SubElement(datacite, DATACITE_ET + 'subjects')
+                    subject = row[sparql_field]["value"]
+                    for part in subject.split("||"):
+                        part = part.strip()
+                        if part:
+                            token = part.rsplit("/", 1)[-1]
+                            subject_element = ET.SubElement(element, DATACITE_ET + "subject")
+                            subject_element.text = token
+
+                #FILE
+                elif target_field == 'distribution':
+                    files_element = ET.SubElement(datacite, OAIRE_ET + 'files')
+                    original_text = row[sparql_field]["value"]
+                    for part in original_text.split("||"):
+                        part = part.strip()
+                        if part:
+                            file_element = ET.SubElement(files_element, OAIRE_ET + 'file')
+                            file_element.text = part
+
+                #ALTERNATIVE IDENTIFIER
+                elif target_field == 'url':
+                    element = ET.SubElement(datacite, DATACITE_ET + 'alternativeIdentifiers')  
+                    url = row[sparql_field]["value"]
+                    for part in url.split("||"):
+                        part = part.strip()
+                        if part:
+                            identifier_element = ET.SubElement(element, DATACITE_ET + 'alternativeIdentifier', {'alternateIdentifierType': 'URL'})
+                            identifier_element.text = part
+
+                #FUNDING REFERENCE
+                elif source_field == OAI_OAIRE_PF + ':fundingReference':
+                    element = ET.SubElement(datacite, OAIRE_ET + 'fundingReferences')
+                    set_project(row[sparql_field]["value"], element, 'fundingReference')
+
+                #ACCESS RIGHT
+                elif target_field == 'accessRights':
+                    num_access=num_access+1
+                    #sanity_list_ac.append(identifier)
+                    access_rights = ET.SubElement(datacite, DATACITE_ET + 'rights')
+                    rights = ET.SubElement(access_rights, DATACITE_ET + 'right') 
+                    uri_access = row[sparql_field]["value"]
+                    rights.set("rightsURI",uri_access)
+                    access= "Not Found"
+                    access = RIGHTS_DICT.get(uri_access)
+                    rights.text = access
+
+                #LICENSE
+                elif sparql_field == 'license':
+                    num_lic=num_lic+1
+                    #sanity_list_lic.append(identifier)
+                    element = ET.SubElement(datacite, OAIRE_ET + 'licenseCondition')
+                    uri = row[sparql_field]["value"]
+                    lic_name = get_label(uri)
+                    element.text = lic_name
+
+
+
+                elif source_field.startswith(OAI_DATACITE_PF):
+                    field_name = source_field.split(':')[1]
+                    element = ET.SubElement(datacite, DATACITE_ET + field_name)
+                    # Set the value from SPARQL results
+                    element.text = row[sparql_field]["value"]
+                elif source_field.startswith(OAI_DC_PF):
+                    field_name = source_field.split(':')[1]
+                    element = ET.SubElement(datacite, DC_ET + field_name)
+                    # Set the value from SPARQL results
+                    element.text = row[sparql_field]["value"]
+                elif source_field.startswith(OAI_OAIRE_PF):
+                    field_name = source_field.split(':')[1]
+                    element = ET.SubElement(datacite, OAIRE_ET + field_name)
+                    # Set the value from SPARQL results
+                    element.text = row[sparql_field]["value"]
+                    
+                else:
+                    pass
+    return datacite
