@@ -1,4 +1,4 @@
-# OAI Publisher Flask App
+# Docker for OAI Publisher Flask App in DH ATLAS PRIN Project 
 
 This repository contains a Flask application based on the project [dh-atlas/oai-publisher](https://github.com/dh-atlas/oai-publisher).
 
