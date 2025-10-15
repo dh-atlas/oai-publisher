@@ -1,0 +1,40 @@
+
+OAI Publisher Architecture Summary
+==================================
+
+1. Server (oai-server.py)
+-------------------------
+- Flask app exposing two endpoints:
+  - /oai: returns OAI-PMH XML responses mapped to the OpenAIRE schema
+  - /oai_raw: returns raw JSON responses
+- Handles verbs: Identify, ListIdentifiers, ListRecords, GetRecord, ListMetadataFormats
+- Runs on port 5000 (app.run(debug=True, port=5000))
+
+2. Handlers/Client (handlers.py, raw_handlers.py)
+------------------------------------------
+- Implement logic for each OAI-PMH verb: Identify, ListIdentifiers, ListRecords, GetRecord, ListMetadataFormats
+- Query RDF data via SPARQLWrapper
+- Format responses in XML (DataCite) or JSON
+
+3. Mapping (mapping.py, mapping_config.py, dicts.py)
+-----------------------------------------------------
+- Translate RDF fields to DataCite XML elements
+- Use dictionaries and config to map RDF predicates to XML tags
+- Handle multiple values, attributes, and namespaces
+
+4. SPARQL Queries (sparql.py)
+-----------------------------
+- Define all SPARQL queries used to extract RDF data
+- Queries support listing, retrieving, and describing datasets
+
+5. Namespaces (namespaces.py)
+-----------------------------
+- Define all XML and RDF namespaces used in the system
+- Centralize schema locations and prefixes
+
+6. Innovative characteristics of this OAI-PMH Publisher
+-------------
+- Works directly on RDF data from a SPARQL endpoint
+- Enables semantic harvesting via OAI-PMH
+- Bridges ATLAS RDF model with OpenAIRE metadata schema
+- Supports FAIR principles and Linked Open Data interoperability
