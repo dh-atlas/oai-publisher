@@ -2,7 +2,7 @@
 
 **OAI-PMH server and client in Flask for publishing RDF metadata according to the OpenAIRE model.**
 
-This project implements a Flask application that exposes an OAI-PMH (Open Archives Initiative Protocol for Metadata Harvesting) interface, mapping SPARQL queries to a Blazegraph endpoint containing RDF files from the **DH-ATLAS** project. The returned metadata complies with the [**oai-datacite** profile](https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/use_of_oai_pmh.html) required by OpenAIRE.
+This software implements a Flask application that exposes an OAI-PMH (Open Archives Initiative Protocol for Metadata Harvesting) interface, mapping SPARQL queries to a Blazegraph endpoint containing RDF files from the **DH-ATLAS** project. The returned metadata complies with the [**oai-datacite** profile](https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/use_of_oai_pmh.html) required by OpenAIRE.
 
 ## Features
 
