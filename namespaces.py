@@ -1,6 +1,7 @@
 # SPARQL ENDPOINT
 #SPARQL_ENDPOINT = "http://localhost:9999/bigdata/sparql"
-SPARQL_ENDPOINT = "https://projects.dharc.unibo.it/atlas/sparql"    # eventuale gestione TIME OUT 
+#SPARQL_ENDPOINT = "https://projects.dharc.unibo.it/atlas/sparql"    # eventuale gestione TIME OUT 
+SPARQL_ENDPOINT = "https://atlas-prin2022-blazegraph.cloud.d4science.org/bigdata/sparql"
 
 # OAI STUFF
 OAI_NS = "http://www.openarchives.org/OAI/2.0/"
