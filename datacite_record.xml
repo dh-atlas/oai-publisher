@@ -1,34 +1,68 @@
-<resource xmlns="http://datacite.org/schema/kernel-4">
-    <identifier identifierType="URL">https://w3id.org/dh-atlas/1728943937-3007112</identifier>
-    <creators>
-        <creator>https://w3id.org/dh-atlas/1728943969-854</creator>
-        <creator>https://w3id.org/dh-atlas/1728943988-693</creator>
-        <creator>https://w3id.org/dh-atlas/1728944010-053</creator>
-        <creator>https://w3id.org/dh-atlas/1728944026-501</creator>
-        <creator>https://w3id.org/dh-atlas/1728944045-966</creator>
-    </creators>
-    <titles>
-        <title>Zeri Photo Archive RDF Dataset</title>
-    </titles>
-    <publishers>
-        <publisher>https://w3id.org/dh-atlas/1728944565-1916842</publisher>
-    </publishers>
-    <publicationYear>2016</publicationYear>
-    <descriptions>
-        <description>The Zeri Photo Archive RDF dataset represents a considerable subset of data already available at
-            Zeri Catalog web site and discoverable through the Europeana Portal, mostly regarding works of Modern Art
-            (15th-16th centuries): about 19.000 works of art and more than 30.000 photographs depicting such works are
-            accurately described by means of like 10 million of RDF triples.
-        </description>
-    </descriptions>
-    <subjects>
-        <subject>https://vocabs.dariah.eu/tadirah/cataloging</subject>
-        <subject>https://vocabs.dariah.eu/tadirah/knowledgeDiscovery</subject>
-        <subject>https://vocabs.dariah.eu/tadirah/knowledgeExtraction</subject>
-    </subjects>
-    <languages>
-        <language>http://publications.europa.eu/resource/authority/language/ENG</language>
-        <language>http://publications.europa.eu/resource/authority/language/ITA</language>
-    </languages>
-    <resourceType resourceTypeGeneral="Dataset">https://schema.org/Dataset</resourceType>
-</resource>
+<?xml version="1.0" encoding="UTF-8"?>
+<record xmlns="http://www.openarchives.org/OAI/2.0/">
+    <header>
+        <identifier>oai:repositorium.uminho.pt:1822/90456</identifier>
+        <datestamp>2025-09-17T22:19:43Z</datestamp>
+        <setSpec>com_1822_14394</setSpec>
+        <setSpec>com_1822_12004</setSpec>
+        <setSpec>col_1822_14395</setSpec>
+    </header>
+    <metadata>
+        <oaire:resource xmlns:oaire="http://namespace.openaire.eu/schema/oaire/" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:datacite="http://datacite.org/schema/kernel-4" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:doc="http://www.lyncode.com/xoai" xmlns:rdf="http://www.w3.org/TR/rdf-concepts/" xsi:schemaLocation="http://namespace.openaire.eu/schema/oaire/ https://www.openaire.eu/schema/repo-lit/4.0/openaire.xsd">
+            <datacite:titles>
+                <datacite:title xml:lang="por">A regression model to assess the social acceptance of demand response programs</datacite:title>
+            </datacite:titles>
+            <datacite:creators>
+                <datacite:creator>
+                    <datacite:creatorName>Ferreira, Paula Varandas</datacite:creatorName>
+                </datacite:creator>
+                <datacite:creator>
+                    <datacite:creatorName>Rocha, Ana Isabel Carneiro</datacite:creatorName>
+                </datacite:creator>
+                <datacite:creator>
+                    <datacite:creatorName>Araújo, Maria Madalena Teixeira de</datacite:creatorName>
+                </datacite:creator>
+            </datacite:creators>
+            <datacite:contributors>
+                <datacite:contributor contributorType="HostingInstitution">
+                    <datacite:contributorName nameType="Organizational">RepositóriUM - Universidade do Minho</datacite:contributorName>
+                    <datacite:nameIdentifier nameIdentifierScheme="e-mail" schemeURI="mailto:repositorium@usdb.uminho.pt">repositorium@usdb.uminho.pt</datacite:nameIdentifier>
+                </datacite:contributor>
+            </datacite:contributors>
+            <oaire:fundingReferences/>
+            <datacite:relatedIdentifiers>
+                <datacite:relatedIdentifier relatedIdentifierType="ISBN" relationType="IsPartOf">978-3-030-73584-5</datacite:relatedIdentifier>
+                <datacite:relatedIdentifier relatedIdentifierType="ISSN" relationType="IsPartOf">1867-8211</datacite:relatedIdentifier>
+                <datacite:relatedIdentifier relatedIdentifierType="DOI" relationType="IsPartOf">10.1007/978-3-030-73585-2_6</datacite:relatedIdentifier>
+            </datacite:relatedIdentifiers>
+            <datacite:dates>
+                <datacite:date dateType="Available">2024-04-03T07:21:08Z</datacite:date>
+                <datacite:date dateType="Accepted">2021-04</datacite:date>
+                <datacite:date dateType="Issued">2021-04</datacite:date>
+                <datacite:date dateType="Updated">2024-03-28T12:19:49Z</datacite:date>
+            </datacite:dates>
+            <dc:language>eng</dc:language>
+            <dc:publisher>Springer</dc:publisher>
+            <oaire:resourceType resourceTypeGeneral="other research product" uri="http://purl.org/coar/resource_type/c_5794">conference paper</oaire:resourceType>
+            <dc:description xml:lang="por">Residential demand response has been playing an important role in the low carbon energy system transition. Although this is not a new concept, the popularity of Demand Response (DR) programs is growing, driven by the increasing opportunities that emerged with smart grid appliances as well as by their potential to support the integration of variable renewables generation. The end-user plays a key role in the successful deployment and dissemination of these DR programs. This study aims to assess social awareness and acceptance of DR programs, based on a survey for data collection and complemented with the regression models. The results suggest that the economic determinants, contribution to environmental protection as well as the extent of urbanization are important motivating drivers, to be explored in the future to encourage the residential consumers’ participation in DR programs.</dc:description>
+            <dc:format>application/pdf</dc:format>
+            <datacite:identifier identifierType="Handle">https://hdl.handle.net/1822/90456</datacite:identifier>
+            <datacite:rights rightsURI="http://purl.org/coar/access_right/c_abf2">open access</datacite:rights>
+            <datacite:subjects>
+                <datacite:subject>Demand response</datacite:subject>
+                <datacite:subject>Heterogeneous choice model (oglm)</datacite:subject>
+                <datacite:subject>Ordered logit regression (ologit)</datacite:subject>
+                <datacite:subject>Residential consumers</datacite:subject>
+                <datacite:subject>Social acceptance</datacite:subject>
+            </datacite:subjects>
+            <datacite:sizes>
+                <datacite:size>401453 bytes</datacite:size>
+            </datacite:sizes>
+            <datacite:sizes/>
+            <datacite:sizes/>
+            <datacite:sizes/>
+            <datacite:sizes/>
+            <oaire:file accessRightsURI="http://purl.org/coar/access_right/c_abf2" mimeType="application/pdf" objectType="fulltext">https://repositorium.uminho.pt/bitstreams/72d0af80-3560-45b8-9b4b-e7108a442e2c/download</oaire:file>
+        </oaire:resource>
+    </metadata>
+</record>

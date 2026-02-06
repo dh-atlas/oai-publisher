@@ -3,23 +3,23 @@
 #SPARQL_ENDPOINT = "https://projects.dharc.unibo.it/atlas/sparql"    # eventuale gestione TIME OUT 
 SPARQL_ENDPOINT = "https://atlas-prin2022-blazegraph.cloud.d4science.org/bigdata/sparql"
 
-# OAI STUFF
-OAI_NS = "http://www.openarchives.org/OAI/2.0/"
-XSI_NS = "http://www.w3.org/2001/XMLSchema-instance"
-BASE_URL = "http://localhost:5000/oai"
-OAI_SCHEMA_LOCATION = "http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"
-OAI_SPARQL_BE = "SPARQL-Backed OAI-PMH Repository"
+OAI_PUBLISHER_BASE_URL = "https://atlas-oaipmh.cloud.d4science.org/oai"
+OAI_PUBLISHER_NAME = "DH-ATLAS OAI-PMH Publisher over SPARQL Endpoint"
 
-# DATACITE STUFF
-OAI_DATACITE_PF = "oai_datacite"
-OAI_DATACITE_VERSION = 4.3
-DATACITE_NS = "http://schema.datacite.org/oai/oai-1.1/"
-DATACITE_KERNEL_NS = "http://datacite.org/schema/kernel-4"
-DC_NS = "http://purl.org/dc/elements/1.1/"
-OAIRE_NS = "http://namespace.openaire.eu/schema/oaire/"
-DATACITE_SCHEMA_LOCATION = "http://schema.datacite.org/oai/oai-1.1/oai_datacite.xsd"
-OAI_DC_PF = 'oai_dc'
-OAI_OAIRE_PF = 'oaire'
+# OAI NAMESPACES
+XSI_NS = "http://www.w3.org/2001/XMLSchema-instance"
+OAI_NS = "http://www.openarchives.org/OAI/2.0/"
+OAI_SCHEMA_LOCATION = "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"
+
+# OPENAIRE GUIDELINES v4 NAMESPACES
+OPENAIRE_NS = "http://namespace.openaire.eu/schema/oaire/"
+DATACITE_NS = "http://datacite.org/schema/kernel-4"
+DC_NS="http://purl.org/dc/elements/1.1/"
+OPENAIRE_SCHEMA_LOCATION = "http://namespace.openaire.eu/schema/oaire/ https://www.openaire.eu/schema/repo-lit/4.0/openaire.xsd"
+
+# METADATA PREFIXES
+OAI_OPENAIRE_PREFIX = "oai_openaire"
+OAI_DC_PREFIX = 'oai_dc'
 
 DATACITE_ET = 'datacite:'
 DC_ET = 'dc:'

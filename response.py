@@ -1,11 +1,9 @@
-from flask import Response, jsonify
-from datetime import datetime
-import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
+import xml.etree.ElementTree as ET
+from datetime import datetime
 
-OAI_NS = "http://www.openarchives.org/OAI/2.0/"
-XSI_NS = "http://www.w3.org/2001/XMLSchema-instance"
-BASE_URL = "http://localhost:5000/oai"
+from flask import Response, jsonify
+from namespaces import *
 
 
 class OAI_PMH_Error(Exception):
@@ -16,6 +14,10 @@ class OAI_PMH_Error(Exception):
 
 
 def create_base_response(verb):
+    ET.register_namespace('oai', OAI_NS)
+    ET.register_namespace('oaire', OPENAIRE_NS)
+    ET.register_namespace('datacite', DATACITE_NS)
+    ET.register_namespace('dc', DC_NS)
     root = ET.Element(f"{{{OAI_NS}}}OAI-PMH")
     root.set(f"{{{XSI_NS}}}schemaLocation",
              "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd")
@@ -23,7 +25,7 @@ def create_base_response(verb):
     ET.SubElement(root, f"{{{OAI_NS}}}responseDate").text = datetime.utcnow().isoformat() + "Z"
     req = ET.SubElement(root, f"{{{OAI_NS}}}request")
     req.set("verb", verb)
-    req.text = BASE_URL
+    req.text = OAI_PUBLISHER_BASE_URL
     return root
 
 

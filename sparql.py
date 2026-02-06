@@ -120,4 +120,19 @@ WHERE {
    }
 """
 
+GET_PROJECT_QUERY = """
+PREFIX schema: <https://schema.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+SELECT ?title  (GROUP_CONCAT(DISTINCT ?fundername; separator=" || ") AS ?fundernames)
+WHERE {
+   BIND(<{identifier}> AS ?project)
+   ?project schema:name ?title .
+   ?project schema:funder ?f .
+   ?f schema:name ?fundername
+         
+   }
+GROUP BY ?title
+"""
+
 
