@@ -154,7 +154,7 @@ def list_records_oai_openaire():
         })
 
         # Add datacite identifier
-        datacite_identifier = ET.SubElement(datacite, "datacite:identifier", {"identifierType": "w3id"})
+        datacite_identifier = ET.SubElement(datacite, "datacite:identifier", {"identifierType": "URL"})
         datacite_identifier.text = identifier
 
         return_openaire_record(datacite, row)
@@ -170,7 +170,7 @@ def list_records_oai_openaire():
 """ SET AGENT """
 
 
-def set_agent(agents: str, parent_node: SubElement, element_name: str):
+def set_agent(agents: str, parent_node: SubElement, element_name: str, contributor: bool):
     agent_list = agents.split('||')
     for agent in agent_list:
         # Query data from SPARQL
@@ -178,20 +178,26 @@ def set_agent(agents: str, parent_node: SubElement, element_name: str):
         sparql.setQuery(query)
         results = sparql.query().convert()
         for row in results["results"]["bindings"]:
-            element = ET.SubElement(parent_node, element_name)
-            name = ET.SubElement(element, element_name + 'Name')
-            name.text = row['name']["value"]
-            if "affName" in row:
-                aff = ET.SubElement(element, 'datacite:affiliation')
-                aff.text = row['affName']["value"]
-            if "orcid" in row:
-                orcid = ET.SubElement(element, 'datacite:nameIdentifier', nameIdentifierScheme='ORCID',
-                                      schemeURI='http://orcid.org')
-                orcid.text = row['orcid']["value"]
-            if "wiki" in row:
-                wiki = ET.SubElement(element, 'datacite:nameIdentifier', nameIdentifierScheme='WIKI',
-                                     schemeURI='http://www.wikidata.org')
-                wiki.text = row['wiki']["value"]
+            # if there's no name we do nothing
+            name_value = row['name']["value"]
+            if name_value:
+                element = ET.SubElement(parent_node, element_name)
+                # ATLAS ontology lacks contributor type, so we set a default
+                if contributor:
+                    element.set("contributorType", "Other")
+                name = ET.SubElement(element, element_name + 'Name')
+                name.text = name_value
+                if "affName" in row:
+                    aff = ET.SubElement(element, 'datacite:affiliation')
+                    aff.text = row['affName']["value"]
+                if "orcid" in row:
+                    orcid = ET.SubElement(element, 'datacite:nameIdentifier', nameIdentifierScheme='ORCID',
+                                          schemeURI='http://orcid.org')
+                    orcid.text = row['orcid']["value"]
+                if "wiki" in row:
+                    wiki = ET.SubElement(element, 'datacite:nameIdentifier', nameIdentifierScheme='WIKI',
+                                         schemeURI='http://www.wikidata.org')
+                    wiki.text = row['wiki']["value"]
 
 
 """ SET PROJECT """
@@ -327,7 +333,7 @@ def get_record_oai_openaire(identifier):
         })
 
         # Add datacite identifier
-        datacite_identifier = ET.SubElement(datacite, "datacite:identifier", {"identifierType": "URI"})
+        datacite_identifier = ET.SubElement(datacite, "datacite:identifier", {"identifierType": "URL"})
         datacite_identifier.text = identifier
 
         return_openaire_record(datacite, row)
@@ -358,23 +364,34 @@ def return_openaire_record(record, row):
             if openaire_field == 'datacite:title':
                 titles_element = ET.SubElement(record, DATACITE_ET + 'titles')
                 add_multiple_nested_elements(titles_element, openaire_field, row, atlas_field)
-            elif openaire_field == 'dc:description' or openaire_field == 'dc:language' or openaire_field == 'oaire:file':
+            elif openaire_field == 'dc:description' or openaire_field == 'oaire:file':
                 value = row[atlas_field]["value"]
                 for part in value.split("||"):
                     part = part.strip()
                     if part:
                         element = ET.SubElement(record, openaire_field)
                         element.text = part
+            elif openaire_field == 'dc:language':
+                value = row[atlas_field]["value"]
+                for part in value.split("||"):
+                    language_code = part.rsplit('/', 1)[-1].strip()
+                    if language_code:
+                        element = ET.SubElement(record, openaire_field)
+                        element.text = language_code.lower()
             # # CREATORS and CONTRIBUTORS
-            elif openaire_field == 'datacite:creator' or openaire_field == 'datacite:contributor':
+            elif openaire_field == 'datacite:creator':
                 element = ET.SubElement(record, NESTED_ELEMENTS_MAP.get(openaire_field))
-                set_agent(row[atlas_field]["value"], element, openaire_field)
+                set_agent(row[atlas_field]["value"], element, openaire_field, False)
+            elif openaire_field == 'datacite:contributor':
+                element = ET.SubElement(record, NESTED_ELEMENTS_MAP.get(openaire_field))
+                set_agent(row[atlas_field]["value"], element, openaire_field, True)
             elif openaire_field == 'dc:publisher':
                 set_publisher(row[atlas_field]["value"], record)
             elif openaire_field == 'oaire:resourceType':
                 element = ET.SubElement(record, openaire_field)
                 uri_rt = row[atlas_field]["value"]
-                ret = RESOURCE_TYPE_DICT.get(uri_rt)
+                # if no additionalType is available we default to Dataset
+                ret = RESOURCE_TYPE_DICT.get(uri_rt) or RESOURCE_TYPE_DICT.get("https://schema.org/Dataset")
                 rt_general = ret[0]
                 value = ret[1]
                 coar_url = ret[2]
@@ -415,10 +432,14 @@ def return_openaire_record(record, row):
                 access_rights.text = access
             elif openaire_field == 'oaire:licenseCondition':
                 element = ET.SubElement(record, openaire_field)
-                uri = row[atlas_field]["value"]
+                uri = row[atlas_field]["value"].split("||")[0]
                 element.text = get_label(uri)
+                element.set("uri",uri)
+            elif openaire_field == "datacite:date":
+                element = ET.SubElement(record, openaire_field)
+                element.text = row[atlas_field]["value"]
+                element.set("dateType", "Issued")
             else:
-                pass
                 element = ET.SubElement(record, openaire_field)
                 element.text = row[atlas_field]["value"]
     return record

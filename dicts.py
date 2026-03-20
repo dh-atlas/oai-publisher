@@ -1,13 +1,21 @@
-# key = ATLAS type = COAR type (OpenAIRE)
+# key = ATLAS type = COAR type (OpenAIRE) We could map also to more specific COAR types, but those are not valid
+# types for the OpenAIRE guidelines v4:
+# - http://purl.org/coar/resource_type/AM6W-6QAW (encoded data for
+# DigitalScholarlyEdition, for which we choose Dataset, for the moment)
+# - http://purl.org/coar/resource_type/GSZA-Y7V7 (knowledge organization system for Ontology, for which we choose
+# Software, for the moment)
+# - http://purl.org/coar/resource_type/RMP5-3GQ6 (collection for TextCollection, for which we choose
+# Dataset, for the moment)
+
 RESOURCE_TYPE_DICT = {
     'https://schema.org/Dataset': ['dataset', 'dataset', 'http://purl.org/coar/resource_type/c_ddb1'],
-    'https://w3id.org/dh-atlas/DigitalScholarlyEdition': ['dataset', 'encoded data', 'http://purl.org/coar/resource_type/AM6W-6QAW'],
-    'https://w3id.org/dh-atlas/LinkedOpenData': ['dataset', 'dataset', 'http://purl.org/coar/resource_type/c_ddb1'],
-    'https://w3id.org/dh-atlas/Ontology': ['dataset', 'knowledge organization system', 'http://purl.org/coar/resource_type/GSZA-Y7V7'],
+    'https://w3id.org/dh-atlas/DigitalScholarlyEdition': ['dataset', 'Digital Scholarly Edition', 'http://purl.org/coar/resource_type/c_ddb1'],
+    'https://w3id.org/dh-atlas/LinkedOpenData': ['dataset', 'Linked Open Data', 'http://purl.org/coar/resource_type/c_ddb1'],
+    'https://w3id.org/dh-atlas/Ontology': ['dataset', 'Ontology', 'http://purl.org/coar/resource_type/c_5ce6'],
     'https://w3id.org/dh-atlas/Software': ['software', 'software', 'http://purl.org/coar/resource_type/c_5ce6'],
-    'https://w3id.org/dh-atlas/TextCollection': ['dataset', 'collection', 'http://purl.org/coar/resource_type/RMP5-3GQ6'],
-    'https://w3id.org/dh-atlas/3DDigitalTwin': ['dataset', 'dataset', 'http://purl.org/coar/resource_type/c_ddb1'],
-    'https://w3id.org/dh-atlas/LanguageModel': ['software', 'software', 'http://purl.org/coar/resource_type/c_5ce6']
+    'https://w3id.org/dh-atlas/TextCollection': ['dataset', 'text collection', 'http://purl.org/coar/resource_type/c_ddb1'],
+    'https://w3id.org/dh-atlas/3DDigitalTwin': ['dataset', '3D Digital Twin', 'http://purl.org/coar/resource_type/c_ddb1'],
+    'https://w3id.org/dh-atlas/LanguageModel': ['software', 'Language Model', 'http://purl.org/coar/resource_type/c_5ce6']
 }
 
 # key = rightURI = COAR label
@@ -34,7 +42,7 @@ SPARQL_STD_DICT = {
     'additionalType': 'additionalType',
     'datePublished': 'datePublished',
     'accessRights': 'accessRights',
-    'license': 'license',
+    'license': 'licenses',
     'uri': 'uri'
 }
 
@@ -74,7 +82,7 @@ ATLAS_TO_OPENAIRE = {
     'additionalType': 'oaire:resourceType',
     'datePublished': 'datacite:date',
     'accessRights': 'datacite:rights',
-    'license': 'oaire:licenseCondition'
+    'licenses': 'oaire:licenseCondition'
 }
 
 # Map nested element to their parent

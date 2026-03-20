@@ -35,10 +35,10 @@ SELECT ?dataset
   (GROUP_CONCAT(DISTINCT ?distribution; separator=" || ") AS ?distributions)
   (GROUP_CONCAT(DISTINCT ?url; separator=" || ") AS ?urls)
   (GROUP_CONCAT(DISTINCT ?producer; separator=" || ") AS ?producers)
+  (GROUP_CONCAT(DISTINCT ?license; separator=" || ") AS ?licenses)
   ?additionalType
   ?datePublished
   ?accessRights
-  ?license
 WHERE {
   ?dataset <https://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
   OPTIONAL { ?dataset <https://schema.org/description> ?description . }
@@ -55,7 +55,7 @@ WHERE {
   OPTIONAL { ?dataset <https://schema.org/producer> ?producer . }
   OPTIONAL { ?dataset <https://schema.org/license> ?license . }
 }
-GROUP BY ?additionalType ?datePublished ?accessRights ?dataset ?license
+GROUP BY ?additionalType ?datePublished ?accessRights ?dataset
 """
 
 GET_RECORD_QUERY = """
@@ -73,10 +73,10 @@ SELECT ?dataset
   (GROUP_CONCAT(DISTINCT ?distribution; separator=" || ") AS ?distributions)
   (GROUP_CONCAT(DISTINCT ?url; separator=" || ") AS ?urls)
   (GROUP_CONCAT(DISTINCT ?producer; separator=" || ") AS ?producers)
+  (GROUP_CONCAT(DISTINCT ?license; separator=" || ") AS ?licenses)
   ?additionalType
   ?datePublished
   ?accessRights
-  ?license
 WHERE {{
   BIND(<{identifier}> AS ?dataset)
   ?dataset <https://schema.org/name> ?name ; rdf:type <https://schema.org/Dataset> .
@@ -94,7 +94,7 @@ WHERE {{
   OPTIONAL {{ ?dataset <https://schema.org/producer> ?producer . }}
   OPTIONAL {{ ?dataset <https://schema.org/license> ?license . }}
 }}
-GROUP BY ?additionalType ?datePublished ?accessRights ?dataset ?license
+GROUP BY ?additionalType ?datePublished ?accessRights ?dataset
 """
 
 GET_AGENT_QUERY = """
