@@ -360,86 +360,93 @@ def list_metadata_formats(args):
 
 def return_openaire_record(record, row):
     for atlas_field, openaire_field in ATLAS_TO_OPENAIRE.items():
-        if atlas_field in row:
-            if openaire_field == 'datacite:title':
-                titles_element = ET.SubElement(record, DATACITE_ET + 'titles')
-                add_multiple_nested_elements(titles_element, openaire_field, row, atlas_field)
-            elif openaire_field == 'dc:description' or openaire_field == 'oaire:file':
+        # if atlas_field in row:
+        if openaire_field == 'datacite:title':
+            titles_element = ET.SubElement(record, DATACITE_ET + 'titles')
+            add_multiple_nested_elements(titles_element, openaire_field, row, atlas_field)
+        elif openaire_field == 'dc:description' or openaire_field == 'oaire:file':
+            if atlas_field in row:
                 value = row[atlas_field]["value"]
                 for part in value.split("||"):
                     part = part.strip()
                     if part:
                         element = ET.SubElement(record, openaire_field)
                         element.text = part
-            elif openaire_field == 'dc:language':
+        elif openaire_field == 'dc:language':
+            if atlas_field in row:
                 value = row[atlas_field]["value"]
                 for part in value.split("||"):
                     language_code = part.rsplit('/', 1)[-1].strip()
                     if language_code:
                         element = ET.SubElement(record, openaire_field)
                         element.text = language_code.lower()
-            # # CREATORS and CONTRIBUTORS
-            elif openaire_field == 'datacite:creator':
-                element = ET.SubElement(record, NESTED_ELEMENTS_MAP.get(openaire_field))
+        # # CREATORS and CONTRIBUTORS
+        elif openaire_field == 'datacite:creator':
+            element = ET.SubElement(record, NESTED_ELEMENTS_MAP.get(openaire_field))
+            if atlas_field in row:
                 set_agent(row[atlas_field]["value"], element, openaire_field, False)
-            elif openaire_field == 'datacite:contributor':
-                element = ET.SubElement(record, NESTED_ELEMENTS_MAP.get(openaire_field))
+        elif openaire_field == 'datacite:contributor':
+            element = ET.SubElement(record, NESTED_ELEMENTS_MAP.get(openaire_field))
+            if atlas_field in row:
                 set_agent(row[atlas_field]["value"], element, openaire_field, True)
-            elif openaire_field == 'dc:publisher':
-                set_publisher(row[atlas_field]["value"], record)
-            elif openaire_field == 'oaire:resourceType':
-                element = ET.SubElement(record, openaire_field)
+        elif openaire_field == 'dc:publisher' and atlas_field in row:
+            set_publisher(row[atlas_field]["value"], record)
+        elif openaire_field == 'oaire:resourceType':
+            element = ET.SubElement(record, openaire_field)
+            # if no additionalType is available we default to Dataset
+            ret = RESOURCE_TYPE_DICT.get("https://schema.org/Dataset")
+            if atlas_field in row:
                 uri_rt = row[atlas_field]["value"]
-                # if no additionalType is available we default to Dataset
-                ret = RESOURCE_TYPE_DICT.get(uri_rt) or RESOURCE_TYPE_DICT.get("https://schema.org/Dataset")
-                rt_general = ret[0]
-                value = ret[1]
-                coar_url = ret[2]
-                element.set("resourceTypeGeneral", rt_general)
-                element.set("uri", coar_url)
-                element.text = value
-            elif openaire_field == 'datacite:subject':
-                element = ET.SubElement(record, NESTED_ELEMENTS_MAP.get(openaire_field))
-                subject = row[atlas_field]["value"]
-                for part in subject.split("||"):
-                    part = part.strip()
-                    if part:
-                        token = part.rsplit("/", 1)[-1]
-                        subject_element = ET.SubElement(element, openaire_field)
-                        subject_element.text = token
-            elif openaire_field == 'datacite:alternateIdentifier':
-                element = ET.SubElement(record, NESTED_ELEMENTS_MAP.get(openaire_field))
-                url = row[atlas_field]["value"]
-                for part in url.split("||"):
-                    part = part.strip()
-                    if part:
-                        identifier_element = ET.SubElement(element, openaire_field,
-                                                           {'alternateIdentifierType': 'URL'})
-                        identifier_element.text = part
-            elif openaire_field == 'oaire:fundingReference':
-                element = ET.SubElement(record,  NESTED_ELEMENTS_MAP.get(openaire_field))
-                projects = row[atlas_field]["value"]
-                for project_id in projects.split("||"):
-                    project_id = project_id.strip()
-                    if project_id:
-                        set_project(project_id, element, openaire_field)
+                ret = RESOURCE_TYPE_DICT.get(uri_rt) or ret
+            rt_general = ret[0]
+            value = ret[1]
+            coar_url = ret[2]
+            element.set("resourceTypeGeneral", rt_general)
+            element.set("uri", coar_url)
+            element.text = value
+        elif openaire_field == 'datacite:subject' and atlas_field in row:
+            element = ET.SubElement(record, NESTED_ELEMENTS_MAP.get(openaire_field))
+            subject = row[atlas_field]["value"]
+            for part in subject.split("||"):
+                part = part.strip()
+                if part:
+                    token = part.rsplit("/", 1)[-1]
+                    subject_element = ET.SubElement(element, openaire_field)
+                    subject_element.text = token
+        elif openaire_field == 'datacite:alternateIdentifier' and atlas_field in row:
+            element = ET.SubElement(record, NESTED_ELEMENTS_MAP.get(openaire_field))
+            url = row[atlas_field]["value"]
+            for part in url.split("||"):
+                part = part.strip()
+                if part:
+                    identifier_element = ET.SubElement(element, openaire_field,
+                                                       {'alternateIdentifierType': 'URL'})
+                    identifier_element.text = part
+        elif openaire_field == 'oaire:fundingReference' and atlas_field in row:
+            element = ET.SubElement(record,  NESTED_ELEMENTS_MAP.get(openaire_field))
+            projects = row[atlas_field]["value"]
+            for project_id in projects.split("||"):
+                project_id = project_id.strip()
+                if project_id:
+                    set_project(project_id, element, openaire_field)
 
-            elif openaire_field == 'datacite:rights':
-                access_rights = ET.SubElement(record, openaire_field)
-                uri_access = row[atlas_field]["value"]
-                access_rights.set("rightsURI", uri_access)
-                access = RIGHTS_DICT.get(uri_access)
-                access_rights.text = access
-            elif openaire_field == 'oaire:licenseCondition':
-                element = ET.SubElement(record, openaire_field)
-                uri = row[atlas_field]["value"].split("||")[0]
-                element.text = get_label(uri)
-                element.set("uri",uri)
-            elif openaire_field == "datacite:date":
-                element = ET.SubElement(record, openaire_field)
-                element.text = row[atlas_field]["value"]
-                element.set("dateType", "Issued")
-            else:
+        elif openaire_field == 'datacite:rights' and atlas_field in row:
+            access_rights = ET.SubElement(record, openaire_field)
+            uri_access = row[atlas_field]["value"]
+            access_rights.set("rightsURI", uri_access)
+            access = RIGHTS_DICT.get(uri_access)
+            access_rights.text = access
+        elif openaire_field == 'oaire:licenseCondition' and atlas_field in row:
+            element = ET.SubElement(record, openaire_field)
+            uri = row[atlas_field]["value"].split("||")[0].strip()
+            element.text = get_label(uri)
+            element.set("uri", uri)
+        elif openaire_field == "datacite:date" and atlas_field in row:
+            element = ET.SubElement(record, openaire_field)
+            element.text = row[atlas_field]["value"]
+            element.set("dateType", "Issued")
+        else:
+            if atlas_field in row:
                 element = ET.SubElement(record, openaire_field)
                 element.text = row[atlas_field]["value"]
     return record
@@ -450,9 +457,10 @@ def return_openaire_record(record, row):
 # row: data
 # atlas_field: row field with the value to put in the nested field
 def add_multiple_nested_elements(parent, field, row, atlas_field):
-    value = row[atlas_field]["value"]
-    for part in value.split("||"):
-        part = part.strip()
-        if part:
-            nested_element = ET.SubElement(parent, field)
-            nested_element.text = part
+    if atlas_field in row:
+        value = row[atlas_field]["value"]
+        for part in value.split("||"):
+            part = part.strip()
+            if part:
+                nested_element = ET.SubElement(parent, field)
+                nested_element.text = part
